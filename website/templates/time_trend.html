@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>時間變化趨勢圖</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: 0 auto;">
+        <canvas id="trendChart"></canvas>
+    </div>
+    
+    <script>
+        // 在這裡添加 Chart.js 代碼來創建時間變化趨勢圖
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['日期1', '日期2', '日期3'],
+                datasets: [{
+                    label: '數值變化',
+                    data: [10, 20, 15],
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '時間變化趨勢'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

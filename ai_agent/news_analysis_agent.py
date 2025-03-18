@@ -18,7 +18,7 @@ from typing import List, Optional
 from prompt_library.prompts import analysis_system_template, analysis_human_template, \
     visualization_system_template, visualization_human_template, \
     report_system_template, report_human_template
-
+from prompt_library.utils import read_html_template
 # 創建logs目錄（如果不存在）
 log_dir = "logs"
 if not os.path.exists(log_dir):
@@ -80,13 +80,18 @@ class NewsAnalysisAgent:
         self.model_name = model_name
         
         # 初始化 Claude LLM
-        self.llm = ChatAnthropic(
+        self.visualization_llm = ChatAnthropic(
             model=model_name,
             temperature=temperature,
             anthropic_api_key=self.api_key,
             max_tokens=4000  # 設置適合 Claude 的 output token 限制
         )
-        
+        self.report_llm = ChatAnthropic(
+            model=model_name,
+            temperature=temperature,
+            anthropic_api_key=self.api_key,
+            max_tokens=40000  # 設置適合 Claude 的 output token 限制
+        )  
         # 可用的分析工具列表
         self.analysis_tools = [
             "時間變化趨勢圖",
@@ -134,7 +139,7 @@ class NewsAnalysisAgent:
         )
         
         self.analysis_chain = LLMChain(
-            llm=self.llm,
+            llm=self.visualization_llm,
             prompt=analysis_prompt,
             output_key="analysis_result",
             verbose=True
@@ -159,7 +164,7 @@ class NewsAnalysisAgent:
         )
         
         self.report_chain = LLMChain(
-            llm=self.llm,
+            llm=self.report_llm,
             prompt=self.report_prompt,
             verbose=True
         )
@@ -227,7 +232,7 @@ class NewsAnalysisAgent:
                 
                 # 創建針對特定工具的視覺化生成鏈
                 visualization_chain = LLMChain(
-                    llm=self.llm,
+                    llm=self.visualization_llm,
                     prompt=self.visualization_prompt
                 )
                 
@@ -351,87 +356,9 @@ class NewsAnalysisAgent:
         """
         # 這裡為各種工具提供默認模板
         templates = {
-            "時間變化趨勢圖": """<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>時間變化趨勢圖</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div style="width: 80%; margin: 0 auto;">
-        <canvas id="trendChart"></canvas>
-    </div>
-    
-    <script>
-        // 在這裡添加 Chart.js 代碼來創建時間變化趨勢圖
-        const ctx = document.getElementById('trendChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['日期1', '日期2', '日期3'],
-                datasets: [{
-                    label: '數值變化',
-                    data: [10, 20, 15],
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '時間變化趨勢'
-                    }
-                }
-            }
-        });
-    </script>
-</body>
-</html>""",
+            "時間變化趨勢圖": read_html_template(os.path.join(self.templates_dir, "time_trend.html")),
+            "比例圓餅圖": read_html_template(os.path.join(self.templates_dir, "pie_chart.html")),
             
-            "比例圓餅圖": """<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>比例圓餅圖</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div style="width: 80%; margin: 0 auto;">
-        <canvas id="pieChart"></canvas>
-    </div>
-    
-    <script>
-        // 在這裡添加 Chart.js 代碼來創建圓餅圖
-        const ctx = document.getElementById('pieChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['類別1', '類別2', '類別3'],
-                datasets: [{
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '比例分布'
-                    }
-                }
-            }
-        });
-    </script>
-</body>
-</html>"""
         }
         
         # 為其他工具添加默認模板
