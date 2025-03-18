@@ -96,7 +96,7 @@ class NewsAnalysisAgent:
         self.analysis_tools = [
             "時間變化趨勢圖",
             "數值分類排序",
-            "台灣地理環境區域分布圖",
+            "台灣地理區域數值分布圖",
             "重大時間線軸圖",
             "比例圓餅圖",
             "財務報表分析",
@@ -358,157 +358,23 @@ class NewsAnalysisAgent:
         templates = {
             "時間變化趨勢圖": read_html_template(os.path.join(self.templates_dir, "time_trend.html")),
             "比例圓餅圖": read_html_template(os.path.join(self.templates_dir, "pie_chart.html")),
-            
+            "數值分類排序": read_html_template(os.path.join(self.templates_dir, "numerical_value_sorting.html")),
+            "台灣地理區域數值分布圖": read_html_template(os.path.join(self.templates_dir, "taiwan_geographical_value_distribution.html")),
+            "重大時間線軸圖": read_html_template(os.path.join(self.templates_dir, "major_time_axis.html")),
+            "財務報表分析": read_html_template(os.path.join(self.templates_dir, "financial_report_analysis.html")),
+            "新聞媒體立場分析比較表",
+            "爭議立場比較分析表"
         }
         
         # 為其他工具添加默認模板
         
-        return templates.get(tool, """<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>可視化圖表</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div style="width: 80%; margin: 0 auto;">
-        <canvas id="chart"></canvas>
-    </div>
-    
-    <script>
-        // 在這裡添加 Chart.js 代碼
-        const ctx = document.getElementById('chart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['項目1', '項目2', '項目3'],
-                datasets: [{
-                    label: '數據',
-                    data: [12, 19, 3],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgb(54, 162, 235)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '數據可視化'
-                    }
-                }
-            }
-        });
-    </script>
-</body>
-</html>""")
+        return templates.get(tool, """""")
     
     def _get_default_report_template(self) -> str:
         """
         獲取默認的報告模板
         """
-        return """<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新聞分析報告</title>
-    <style>
-        body {
-            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        h1 {
-            color: #1a5276;
-            margin-bottom: 10px;
-        }
-        .date {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-        .summary {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-left: 4px solid #3498db;
-            margin-bottom: 30px;
-        }
-        .visualization-container {
-            margin: 40px 0;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .visualization-title {
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .analysis-section {
-            margin: 30px 0;
-        }
-        .conclusion {
-            background-color: #f2f4f4;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 40px;
-        }
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 0.9em;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 20px;
-        }
-    </style>
-    <!-- 添加任何你需要的 JavaScript 庫 -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <header>
-        <h1>新聞分析報告</h1>
-        <div class="date">生成日期：<span id="current-date"></span></div>
-    </header>
-    
-    <section class="summary">
-        <h2>摘要</h2>
-        <p>
-            <!-- 這裡將插入新聞分析摘要 -->
-        </p>
-    </section>
-    
-    <section class="analysis-section">
-        <h2>主要發現</h2>
-        <!-- 這裡將插入主要發現的內容 -->
-    </section>
-    
-    <!-- 可視化圖表將插入到這裡 -->
-    
-    <section class="conclusion">
-        <h2>結論與展望</h2>
-        <!-- 這裡將插入結論和展望 -->
-    </section>
-    
-    <footer>
-        <p>本報告由 AI 新聞分析系統自動生成，僅供參考。</p>
-    </footer>
-    
-    <script>
-        // 設置當前日期
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('zh-TW');
-    </script>
-</body>
-</html>"""
+        return read_html_template(os.path.join(self.templates_dir, "report_template.html"))
 
 
 # ----- 工具類定義 -----

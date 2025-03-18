@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數值分類排序</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #faf7f2;
+            color: #3e2723;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+        }
+        .visualization-title {
+            color: #5d4037;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 1.5em;
+        }
+        .visualization-subtitle {
+            color: #8d6e63;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            font-weight: normal;
+        }
+        .visualization-description {
+            margin-bottom: 25px;
+            color: #6d4c41;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .chart-container {
+            height: 500px;
+            margin: 20px 0;
+        }
+        .data-source {
+            font-size: 0.8em;
+            color: #8d6e63;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .notes {
+            font-size: 0.9em;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #efebe9;
+            border-left: 4px solid #a1887f;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="visualization-title">數值分類排序分析</h2>
+        <h3 class="visualization-subtitle">[分析主題]</h3>
+        
+        <div class="visualization-description">
+            <!-- 這裡將由 AI 填入數據描述 -->
+            本視覺化呈現了[數據主題]的分類與排序分析，展示各項類別數值的分布情況。通過橫向條形圖的方式，清晰展現各類別間的數值差異，幫助理解[主題]的結構和分布特徵。
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="sortedBarChart"></canvas>
+        </div>
+        
+        <div class="notes">
+            <strong>分析說明：</strong>
+            <!-- 這裡將由 AI 填入分析說明 -->
+            圖表依數值大小排序，直觀呈現各類別間的數值差異。顏色深淺表示數值高低，數值較高的類別使用較深的棕色。[在此補充關於數據來源、分析方法或結果解讀的詳細說明]
+        </div>
+        
+        <div class="data-source">
+            數據來源：[資料來源] | 最後更新：<span id="update-date"></span>
+        </div>
+    </div>
+    
+    <script>
+        // 設置當前日期
+        document.getElementById('update-date').textContent = new Date().toLocaleDateString('zh-TW');
+        
+        // 這部分將由 AI 根據新聞數據替換
+        const categoryLabels = ['類別A', '類別B', '類別C', '類別D', '類別E', '類別F', '類別G', '類別H'];
+        const dataValues = [320, 420, 290, 380, 490, 230, 180, 150];
+        const chartTitle = '[數據標題]（單位：[單位]）';
+        
+        // 創建顏色陣列 - 棕色色調，數值較大的使用較深的顏色
+        function generateBrownColorScale(count) {
+            // 複製數據並排序，以確定數值在整體中的位置
+            const sortedData = [...dataValues].sort((a, b) => a - b);
+            
+            // 生成對應的顏色
+            const colors = dataValues.map(value => {
+                // 找出該值在排序後數組中的位置
+                const index = sortedData.indexOf(value);
+                // 計算顏色強度 (0.4 ~ 0.9)
+                const intensity = 0.4 + (index / (count - 1)) * 0.5;
+                
+                // 棕色色調
+                return `rgba(101, 67, 33, ${intensity})`;
+            });
+            
+            return colors;
+        }
+        
+        // 將數據和標籤按數值大小排序
+        const combinedData = categoryLabels.map((label, index) => {
+            return { label: label, value: dataValues[index] };
+        });
+        
+        combinedData.sort((a, b) => b.value - a.value);
+        
+        const sortedLabels = combinedData.map(item => item.label);
+        const sortedValues = combinedData.map(item => item.value);
+        const colors = generateBrownColorScale(sortedValues.length);
+        
+        // 創建圖表
+        const ctx = document.getElementById('sortedBarChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: sortedLabels,
+                datasets: [{
+                    label: '[數值標籤]',
+                    data: sortedValues,
+                    backgroundColor: colors,
+                    borderColor: colors.map(color => color.replace(/, [\d\.]+\)/, ', 1)')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',  // 水平條形圖
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartTitle,
+                        color: '#5d4037',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.x} [單位]`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '[x軸標題]（[單位]）',
+                            color: '#6d4c41',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(137, 116, 107, 0.1)'
+                        },
+                        ticks: {
+                            color: '#6d4c41'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: '[y軸標題]',
+                            color: '#6d4c41',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#6d4c41',
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>財務報表分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #faf7f2;
+            color: #3e2723;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .visualization-title {
+            color: #5d4037;
+            margin-bottom: 5px;
+            font-size: 1.8em;
+        }
+        .visualization-subtitle {
+            color: #8d6e63;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .visualization-description {
+            margin-bottom: 25px;
+            color: #6d4c41;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .chart-container {
+            margin: 30px 0;
+            position: relative;
+        }
+        .chart-wrapper {
+            height: 400px;
+            margin-bottom: 40px;
+        }
+        .data-source {
+            font-size: 0.8em;
+            color: #8d6e63;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .notes {
+            font-size: 0.9em;
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #efebe9;
+            border-left: 4px solid #a1887f;
+            border-radius: 0 4px 4px 0;
+        }
+        .financial-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        .metric-card {
+            flex: 0 0 calc(25% - 20px);
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid #8d6e63;
+        }
+        .metric-title {
+            font-size: 0.9em;
+            color: #6d4c41;
+            margin-bottom: 10px;
+        }
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #5d4037;
+        }
+        .metric-change {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .metric-change.positive {
+            color: #2e7d32;
+        }
+        .metric-change.negative {
+            color: #c62828;
+        }
+        .section-title {
+            color: #5d4037;
+            border-bottom: 2px solid #d7ccc8;
+            padding-bottom: 10px;
+            margin: 40px 0 20px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #d7ccc8;
+        }
+        th {
+            background-color: #efebe9;
+            color: #5d4037;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #fafafa;
+        }
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        .good-indicator {
+            color: #2e7d32;
+        }
+        .bad-indicator {
+            color: #c62828;
+        }
+        .neutral-indicator {
+            color: #f57c00;
+        }
+        @media (max-width: 768px) {
+            .metric-card {
+                flex: 0 0 calc(50% - 15px);
+            }
+        }
+        @media (max-width: 480px) {
+            .metric-card {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="visualization-title">[分析主題]</h1>
+            <h3 class="visualization-subtitle">[分析時間範圍]</h3>
+        </div>
+        
+        <div class="visualization-description">
+            <!-- 這裡將由 AI 填入數據描述 -->
+            本報告提供了[組織/公司名稱]的財務表現綜合分析。報告涵蓋關鍵財務指標、收入與支出趨勢、資產負債結構以及財務比率分析，旨在提供全面的財務健康狀況評估。以下分析基於[數據來源]的數據，涵蓋了[時間範圍]。
+        </div>
+        
+        <!-- 關鍵財務指標 -->
+        <h2 class="section-title">關鍵財務指標</h2>
+        <div class="financial-metrics">
+            <div class="metric-card">
+                <div class="metric-title">總收入</div>
+                <div class="metric-value">[收入值]</div>
+                <div class="metric-change positive">[同比變化]% ↑</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">淨利潤</div>
+                <div class="metric-value">[淨利潤值]</div>
+                <div class="metric-change negative">[同比變化]% ↓</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">毛利率</div>
+                <div class="metric-value">[毛利率]%</div>
+                <div class="metric-change positive">[同比變化]% ↑</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">資產報酬率</div>
+                <div class="metric-value">[ROA值]%</div>
+                <div class="metric-change negative">[同比變化]% ↓</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">負債比率</div>
+                <div class="metric-value">[負債比率]%</div>
+                <div class="metric-change positive">[同比變化]% ↑</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">營運現金流</div>
+                <div class="metric-value">[現金流值]</div>
+                <div class="metric-change positive">[同比變化]% ↑</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">每股盈餘</div>
+                <div class="metric-value">[EPS值]</div>
+                <div class="metric-change negative">[同比變化]% ↓</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">資本支出</div>
+                <div class="metric-value">[資本支出值]</div>
+                <div class="metric-change positive">[同比變化]% ↑</div>
+            </div>
+        </div>
+        
+        <!-- 收入趨勢圖 -->
+        <h2 class="section-title">收入與利潤趨勢</h2>
+        <div class="chart-wrapper">
+            <canvas id="revenueChart"></canvas>
+        </div>
+        
+        <!-- 支出分佈圖 -->
+        <h2 class="section-title">支出分佈</h2>
+        <div class="chart-wrapper">
+            <canvas id="expenseChart"></canvas>
+        </div>
+        
+        <!-- 資產負債結構 -->
+        <h2 class="section-title">資產負債結構</h2>
+        <div class="chart-wrapper">
+            <canvas id="balanceChart"></canvas>
+        </div>
+        
+        <!-- 財務比率分析 -->
+        <h2 class="section-title">財務比率分析</h2>
+        <div class="chart-wrapper">
+            <canvas id="ratioChart"></canvas>
+        </div>
+        
+        <!-- 關鍵財務數據表格 -->
+        <h2 class="section-title">財務數據概覽</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>指標</th>
+                        <th>[年度/季度1]</th>
+                        <th>[年度/季度2]</th>
+                        <th>[年度/季度3]</th>
+                        <th>同比變化</th>
+                        <th>評估</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>總收入</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="positive">[變化率]%</td>
+                        <td class="good-indicator">良好</td>
+                    </tr>
+                    <tr>
+                        <td>營業成本</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="negative">[變化率]%</td>
+                        <td class="bad-indicator">需關注</td>
+                    </tr>
+                    <tr>
+                        <td>毛利潤</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="positive">[變化率]%</td>
+                        <td class="good-indicator">良好</td>
+                    </tr>
+                    <tr>
+                        <td>營業利潤</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="positive">[變化率]%</td>
+                        <td class="good-indicator">良好</td>
+                    </tr>
+                    <tr>
+                        <td>淨利潤</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="negative">[變化率]%</td>
+                        <td class="neutral-indicator">一般</td>
+                    </tr>
+                    <tr>
+                        <td>總資產</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="positive">[變化率]%</td>
+                        <td class="good-indicator">良好</td>
+                    </tr>
+                    <tr>
+                        <td>總負債</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="negative">[變化率]%</td>
+                        <td class="good-indicator">良好</td>
+                    </tr>
+                    <tr>
+                        <td>股東權益</td>
+                        <td>[值1]</td>
+                        <td>[值2]</td>
+                        <td>[值3]</td>
+                        <td class="positive">[變化率]%</td>
+                        <td class="good-indicator">良好</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="notes">
+            <strong>分析說明：</strong>
+            <!-- 這裡將由 AI 填入分析說明 -->
+            [在此提供財務分析的重點說明與結論]。本分析基於歷史數據，不應被視為未來財務表現的保證。投資者和利害關係人應結合行業趨勢、市場環境和其他非財務因素進行綜合判斷。
+        </div>
+        
+        <div class="data-source">
+            數據來源：[資料來源] | 分析日期：<span id="update-date"></span>
+        </div>
+    </div>
+    
+    <script>
+        // 設置當前日期
+        document.getElementById('update-date').textContent = new Date().toLocaleDateString('zh-TW');
+        
+        // 定義棕色系顏色範圍
+        function getBrownColors(count) {
+            const colors = [
+                'rgba(121, 85, 72, 0.8)',    // 深棕色
+                'rgba(141, 110, 99, 0.8)',   // 棕色
+                'rgba(161, 136, 127, 0.8)',  // 中棕色
+                'rgba(188, 170, 164, 0.8)',  // 淺棕色
+                'rgba(215, 204, 200, 0.8)'   // 極淺棕色
+            ];
+            
+            // 如果需要更多顏色，生成更多不同透明度的棕色
+            if (count > colors.length) {
+                for (let i = 0; i < count - colors.length; i++) {
+                    const alpha = 0.7 - (i * 0.05);
+                    colors.push(`rgba(121, 85, 72, ${alpha > 0.3 ? alpha : 0.3})`);
+                }
+            }
+            
+            return colors.slice(0, count);
+        }
+        
+        // 創建收入與利潤趨勢圖
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            // 這部分將由 AI 根據實際數據替換
+            const periods = ['[期間1]', '[期間2]', '[期間3]', '[期間4]', '[期間5]', '[期間6]'];
+            const revenueData = [500, 520, 580, 620, 700, 750];
+            const profitData = [100, 120, 150, 170, 200, 230];
+            const marginData = [20, 23, 26, 27, 28.5, 30.6]; // 利潤率 (%)
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: periods,
+                    datasets: [
+                        {
+                            label: '收入',
+                            data: revenueData,
+                            backgroundColor: 'rgba(161, 136, 127, 0.7)',
+                            borderColor: 'rgba(161, 136, 127, 1)',
+                            borderWidth: 1,
+                            order: 2
+                        },
+                        {
+                            label: '淨利潤',
+                            data: profitData,
+                            backgroundColor: 'rgba(121, 85, 72, 0.7)',
+                            borderColor: 'rgba(121, 85, 72, 1)',
+                            borderWidth: 1,
+                            order: 1
+                        },
+                        {
+                            label: '利潤率 (%)',
+                            data: marginData,
+                            type: 'line',
+                            fill: false,
+                            borderColor: 'rgba(78, 52, 46, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(78, 52, 46, 1)',
+                            pointRadius: 4,
+                            tension: 0.4,
+                            yAxisID: 'y1',
+                            order: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '收入、利潤及利潤率趨勢',
+                            color: '#5d4037',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#5d4037'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(188, 170, 164, 0.2)'
+                            },
+                            ticks: {
+                                color: '#6d4c41'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '[金額單位]',
+                                color: '#6d4c41'
+                            },
+                            grid: {
+                                color: 'rgba(188, 170, 164, 0.2)'
+                            },
+                            ticks: {
+                                color: '#6d4c41'
+                            }
+                        },
+                        y1: {
+                            position: 'right',
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '利潤率 (%)',
+                                color: '#6d4c41'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                color: '#6d4c41'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 創建支出分佈圖
+        function createExpenseChart() {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            
+            // 這部分將由 AI 根據實際數據替換
+            const categories = ['[類別1]', '[類別2]', '[類別3]', '[類別4]', '[類別5]'];
+            const expenseData = [300, 150, 200, 100, 50];
+            const colors = getBrownColors(categories.length);
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: expenseData,
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => color.replace(/, [\d\.]+\)/, ', 1)')),
+                        borderWidth: 1,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '支出類別分佈',
+                            color: '#5d4037',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 20
+                            }
+                        },
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#5d4037',
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.formattedValue || '';
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((context.raw / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 創建資產負債結構圖
+        function createBalanceChart() {
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            
+            // 這部分將由 AI 根據實際數據替換
+            const labels = ['[期間1]', '[期間2]', '[期間3]', '[期間4]'];
+            const currentAssets = [200, 230, 250, 280];
+            const nonCurrentAssets = [500, 480, 520, 550];
+            const currentLiabilities = [150, 180, 160, 170];
+            const nonCurrentLiabilities = [250, 230, 260, 280];
+            const equity = [300, 300, 350, 380];
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '流動資產',
+                            data: currentAssets,
+                            backgroundColor: 'rgba(161, 136, 127, 0.7)',
+                            stack: 'Assets'
+                        },
+                        {
+                            label: '非流動資產',
+                            data: nonCurrentAssets,
+                            backgroundColor: 'rgba(188, 170, 164, 0.7)',
+                            stack: 'Assets'
+                        },
+                        {
+                            label: '流動負債',
+                            data: currentLiabilities,
+                            backgroundColor: 'rgba(78, 52, 46, 0.7)',
+                            stack: 'Liabilities'
+                        },
+                        {
+                            label: '非流動負債',
+                            data: nonCurrentLiabilities,
+                            backgroundColor: 'rgba(121, 85, 72, 0.7)',
+                            stack: 'Liabilities'
+                        },
+                        {
+                            label: '股東權益',
+                            data: equity,
+                            backgroundColor: 'rgba(200, 230, 201, 0.7)',
+                            stack: 'Liabilities'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '資產負債結構',
+                            color: '#5d4037',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#5d4037'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(188, 170, 164, 0.2)'
+                            },
+                            ticks: {
+                                color: '#6d4c41'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: '[金額單位]',
+                                color: '#6d4c41'
+                            },
+                            grid: {
+                                color: 'rgba(188, 170, 164, 0.2)'
+                            },
+                            ticks: {
+                                color: '#6d4c41'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 創建財務比率分析圖
+        function createRatioChart() {
+            const ctx = document.getElementById('ratioChart').getContext('2d');
+            
+            // 這部分將由 AI 根據實際數據替換
+            const periods = ['[期間1]', '[期間2]', '[期間3]', '[期間4]'];
+            const ratios = {
+                currentRatio: [1.8, 1.9, 2.1, 2.2],
+                quickRatio: [1.2, 1.3, 1.5, 1.6],
+                debtToEquity: [0.8, 0.75, 0.7, 0.65],
+                returnOnAssets: [8.5, 9.2, 10.1, 11.5],
+                returnOnEquity: [14.2, 15.6, 16.8, 18.5]
+            };
+            
+            const datasets = [
+                {
+                    label: '流動比率',
+                    data: ratios.currentRatio,
+                    borderColor: 'rgba(121, 85, 72, 1)',
+                    backgroundColor: 'rgba(121, 85, 72, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(121, 85, 72, 1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: '速動比率',
+                    data: ratios.quickRatio,
+                    borderColor: 'rgba(141, 110, 99, 1)',
+                    backgroundColor: 'rgba(141, 110, 99, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(141, 110, 99, 1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: '負債權益比',
+                    data: ratios.debtToEquity,
+                    borderColor: 'rgba(161, 136, 127, 1)',
+                    backgroundColor: 'rgba(161, 136, 127, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(161, 136, 127, 1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: '資產報酬率 (%)',
+                    data: ratios.returnOnAssets,
+                    borderColor: 'rgba(188, 170, 164, 1)',
+                    backgroundColor: 'rgba(188, 170, 164, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(188, 170, 164, 1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: '股東權益報酬率 (%)',
+                    data: ratios.returnOnEquity,
+                    borderColor: 'rgba(78, 52, 46, 1)',
+                    backgroundColor: 'rgba(78, 52, 46, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(78, 52, 46, 1)',
+                    tension: 0.3,
+                    fill: true
+                }
+            ];
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['流動比率', '速動比率', '負債權益比', '資產報酬率', '股東權益報酬率'],
+                    datasets: periods.map((period, i) => ({
+                        label: period,
+                        data: [
+                            ratios.currentRatio[i],
+                            ratios.quickRatio[i],
+                            ratios.debtToEquity[i],
+                            ratios.returnOnAssets[i],
+                            ratios.returnOnEquity[i]
+                        ],
+                        borderColor: getBrownColors(periods.length)[i].replace(/, [\d\.]+\)/, ', 1)'),
+                        backgroundColor: getBrownColors(periods.length)[i].replace(/, [\d\.]+\)/, ', 0.2)'),
+                        borderWidth: 2,
+                        pointBackgroundColor: getBrownColors(periods.length)[i].replace(/, [\d\.]+\)/, ', 1)')
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '財務比率分析',
+                            color: '#5d4037',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 20
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#5d4037'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.formattedValue;
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(188, 170, 164, 0.3)'
+                            },
+                            grid: {
+                                color: 'rgba(188, 170, 164, 0.3)'
+                            },
+                            pointLabels: {
+                                color: '#6d4c41',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            ticks: {
+                                color: '#6d4c41',
+                                backdropColor: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化
+       // 初始化所有圖表
+       window.addEventListener('DOMContentLoaded', function() {
+           createRevenueChart();
+           createExpenseChart();
+           createBalanceChart();
+           createRatioChart();
+       });
+   </script>
+</body>
+</html>
