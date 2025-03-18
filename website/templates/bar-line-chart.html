@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>多軸混合圖表模板</title>
+    <!-- 引入Chart.js庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        .chart-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 15px;
+        }
+        .chart-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .source {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="chart-title">多軸混合圖表</div>
+        <div class="chart-wrapper">
+            <canvas id="mixedChart"></canvas>
+        </div>
+        <div class="source">資料來源：請填寫資料來源</div>
+    </div>
+
+    <script>
+        // 示例數據，使用時請替換為實際數據
+        const chartData = [
+            { xValue: 2018, barValue: 100, lineValue1: 2.5, lineValue2: 1.5 },
+            { xValue: 2019, barValue: 150, lineValue1: 3.0, lineValue2: 1.8 },
+            // ... 添加更多數據
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('mixedChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.map(d => d.xValue),
+                        datasets: [
+                            {
+                                type: 'bar',
+                                label: '柱狀圖數據',
+                                data: chartData.map(d => d.barValue),
+                                backgroundColor: 'rgba(121, 85, 72, 0.7)',
+                                borderColor: 'rgba(121, 85, 72, 1)',
+                                borderWidth: 1,
+                                yAxisID: 'yAxis1'
+                            },
+                            {
+                                type: 'line',
+                                label: '折線圖數據1',
+                                data: chartData.map(d => d.lineValue1),
+                                backgroundColor: 'rgba(255, 152, 0, 0.2)',
+                                borderColor: 'rgba(255, 152, 0, 1)',
+                                borderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                fill: false,
+                                yAxisID: 'yAxis2'
+                            },
+                            {
+                                type: 'line',
+                                label: '折線圖數據2',
+                                data: chartData.map(d => d.lineValue2),
+                                backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                                borderColor: 'rgba(76, 175, 80, 1)',
+                                borderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                fill: false,
+                                yAxisID: 'yAxis2'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            xAxis: {
+                                title: {
+                                    display: true,
+                                    text: 'X軸標題'
+                                }
+                            },
+                            yAxis1: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: '左側Y軸標題'
+                                },
+                                min: 0,    // 自定義最小值
+                                max: 200,  // 自定義最大值
+                            },
+                            yAxis2: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: '右側Y軸標題'
+                                },
+                                min: 0,    // 自定義最小值
+                                max: 5,    // 自定義最大值
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

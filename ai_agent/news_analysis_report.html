@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣預算分配爭議分析報告</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: #1a5276;
+            margin-bottom: 10px;
+        }
+        .date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 30px;
+        }
+        .visualization-container {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .visualization-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .analysis-section {
+            margin: 30px 0;
+        }
+        .conclusion {
+            background-color: #f2f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+        }
+        .key-points {
+            background-color: #eaf2f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .key-points ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .key-points li {
+            margin-bottom: 8px;
+        }
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            margin: 30px 0;
+        }
+        .chart-description {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #555;
+        }
+        .highlight {
+            background-color: #fffde7;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1/dist/chartjs-adapter-moment.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>台灣預算分配爭議分析報告</h1>
+        <div class="date">生成日期：<span id="current-date"></span></div>
+    </header>
+    
+    <section class="summary">
+        <h2>摘要</h2>
+        <p>
+            本報告基於2025年3月9日至12日期間的新聞報導，分析台灣預算分配相關爭議。近期台灣預算議題主要集中在國防預算比例、資安預算不足、普發現金政策以及台電預算等方面。美國要求台灣將國防預算提高至GDP的10%，而台灣目前僅為2.5%左右，引發各界廣泛討論。同時，資安院長林盈達表示台灣資安預算嚴重不足，「少了快一個零」。在野黨與執政黨就預算刪減與凍結問題存在明顯分歧，特別是在國防預算方面的爭議已引起美方關切。此外，台電預算刪減可能導致電價上漲，財政收支劃分法修正案也成為焦點議題。本報告透過多維度分析，呈現台灣預算分配的現況與爭議焦點。
+        </p>
+    </section>
+    
+    <section class="analysis-section">
+        <h2>主要發現</h2>
+        <div class="key-points">
+            <ul>
+                <li>國防預算爭議是近期台灣預算相關新聞的主要焦點，佔據最大比例的報導量</li>
+                <li>美國要求台灣將國防預算提高至GDP的10%，而台灣目前約為2.5%，若達10%將高達2.5兆元，約佔台灣年度總預算3兆元的83%</li>
+                <li>2025年台灣國防預算為4760億元，是歷年最高，但仍遭在野黨刪減約46.8億元</li>
+                <li>資安院長林盈達表示台灣資安預算太少，「少了快一個零」，資安署與資安院預算加總僅8-9億元</li>
+                <li>2025年中央政府總預算為2兆9884億元，比去年增加1365億元</li>
+                <li>撥補台電虧損預算1千億元遭砍，台電負債接近5千億元，已達舉債上限，可能影響電價調整</li>
+                <li>財政部指出2025年稅課收入實徵數大於預算數3757億元，已優先用於減少舉債與還債</li>
+            </ul>
+        </div>
+    </section>
+    
+    <div class="visualization-container">
+        <h3 class="visualization-title">台灣預算相關新聞主題分類分析</h3>
+        <div class="chart-container">
+            <canvas id="budgetTopicsChart"></canvas>
+        </div>
+        <div class="chart-description">
+            <p>此圖表根據2025年3月收集的新聞數據，對台灣預算相關報導進行主題分類分析。從圖表可見，國防預算相關報導佔據最大比例，其次是財政預算分配與政治爭議。這反映了當前台灣社會對國防支出的高度關注，特別是美國要求台灣提高國防預算至GDP 10%的議題引發廣泛討論。</p>
+        </div>
+    </div>
+    
+    <div class="visualization-container">
+        <h3 class="visualization-title">台灣預算相關新聞來源分布</h3>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-description">
+            <p>此圓餅圖展示了2025年3月9日至12日期間關於「台灣預算」主題的新聞來源分布。從圖表可見，中時新聞網、MSN和自由時報是報導此議題最多的媒體，反映了不同媒體對台灣預算議題的關注度差異。主要討論議題包括國防預算占GDP比例、總預算覆議案、資安預算不足等話題。</p>
+        </div>
+    </div>
+    
+    <div class="visualization-container">
+        <h3 class="visualization-title">台灣預算相關新聞時間趨勢分析</h3>
+        <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+        </div>
+        <div class="chart-description">
+            <p>此圖表展示了2025年3月9日至3月12日期間關於台灣預算的新聞報導分布。從趨勢可見，3月11日是相關報導的高峰期，主要集中在國防預算議題，特別是美國要求台灣將國防預算提高至GDP的10%的討論。其他重要議題包括資安預算不足、普發現金政策討論以及財政收支劃分法修正案等。</p>
+        </div>
+    </div>
+    
+    <div class="visualization-container">
+        <h3 class="visualization-title">台灣預算爭議各方立場強度比較</h3>
+        <div class="chart-container">
+            <canvas id="positionChart"></canvas>
+        </div>
+        <div class="chart-description">
+            <p>此圖表比較了台灣預算爭議中各方立場的強度。在國防預算方面，美方強烈支持增加至GDP 10%，而國內則有反對大幅增加的聲音，認為會排擠其他預算；資安預算方面，普遍認為嚴重不足；普發現金議題上，財政部反對的立場略強於支持方；台電預算爭議則較為平衡。此分析反映了各預算議題中不同立場的強度對比。</p>
+        </div>
+        
+        <div class="legend">
+            <h3>主要爭議說明</h3>
+            <ul>
+                <li><strong>國防預算爭議</strong>：美方要求台灣將國防預算提高至GDP的10%，而台灣目前約為2.5%。在野黨被指責刪減國防預算，引發美方關切。</li>
+                <li><strong>資安預算爭議</strong>：資安院長林盈達表示台灣資安預算被砍25%，認為整體預算「少了快一個零」。</li>
+                <li><strong>普發現金爭議</strong>：國民黨主張稅收超徵應普發現金1萬元，財政部警告可能有舉債疑慮。</li>
+                <li><strong>台電預算爭議</strong>：撥補台電虧損預算1千億元遭砍，可能導致電價上漲。</li>
+            </ul>
+        </div>
+    </div>
+    
+    <section class="analysis-section">
+        <h2>深入分析</h2>
+        
+        <h3>國防預算爭議</h3>
+        <p>
+            國防預算爭議是本次分析中最突出的議題。美國國防部次長提名人柯伯吉在參議院聽證會上重申，台灣應將國防預算從「遠低於」GDP的3%提高到10%。行政院長卓榮泰則明確表示，台灣無法負擔將國防支出提升至GDP 10%，未來仍須依國家財政狀況審慎評估。
+        </p>
+        <p>
+            根據數據，若台灣國防預算達GDP 10%，總額將高達2兆6449億元，占總歲出比例84-90%。國民黨立委陳玉珍指出，這意味著「社會福利都不用做了，教育不用做了，所有交通建設都不必做了」。專家建議，台灣應考量「國防預算占政府總預算比例」作為另一指標，並根據自身面臨的威脅情勢精算國防預算。
+        </p>
+        
+        <h3>資安預算問題</h3>
+        <p>
+            數發部資安院長林盈達表示，資安院今年預算被砍25%約兩億元。資安署與資安院預算加總僅8-9億元，林盈達認為應達百億元，「少了快一個零」。他指出，台灣每天都被駭客大量攻擊，資安防護應有幾十億元預算。資安院因預算縮減，部分原定年中進行的概念性驗證(POC)計畫被推遲至年底，並將透過科發基金支應新計畫。
+        </p>
+        
+        <h3>財政與普發現金爭議</h3>
+        <p>
+            國民黨主張全民普發現金1萬元，提出「稅收超徵全民共享發放現金特別條例草案」。財政部則表示，2025年中央政府總預算稅課收入實徵數大於預算數3757億元，但已優先用於減少舉債與還債：原編列1571億元債務舉借未舉借，並執行債務還本預算1358億元。財政部提醒，若僅以稅收全年實徵數達預算編列數120%或實徵數大於預算3000億元為發放條件，恐有舉債發現金疑慮。
+        </p>
+        
+        <h3>台電預算與電價問題</h3>
+        <p>
+            立法院審議總預算覆議案時，撥補台電虧損預算1千億元遭砍，引發電價上漲疑慮。經濟部長郭智輝表示，台電負債接近5千億元，已達舉債上限，若不調整財務，未來舉債將有困難。他強調，電價是否調漲須經電價費率審議委員會討論後才能決定，該委員會預計3月下旬召開。此外，經濟部節能電器補助計畫19.2億元預算遭刪，影響約60萬台冷氣的補貼。
+        </p>
+    </section>
+    
+    <section class="conclusion">
+        <h2>結論與展望</h2>
+        <p>
+            本報告分析顯示，台灣預算分配爭議主要集中在國防、資安、普發現金及

@@ -1,0 +1,247 @@
+:root {
+    /* 主題色彩 - 棕色系 */
+    --primary-dark: #5D4037;     /* 深棕色 */
+    --primary: #795548;          /* 主棕色 */
+    --primary-light: #A1887F;    /* 淺棕色 */
+    --primary-very-light: #D7CCC8; /* 極淺棕色 */
+    
+    /* 輔助色彩 */
+    --secondary: #607D8B;        /* 藍灰色 */
+    --accent: #FF5722;           /* 強調色（橙色） */
+    
+    /* 中性色彩 */
+    --text-dark: #212121;        /* 主要文字色 */
+    --text-medium: #757575;      /* 次要文字色 */
+    --text-light: #9E9E9E;       /* 淺色文字 */
+    --background: #FAFAFA;       /* 頁面背景 */
+    --card-bg: #FFFFFF;          /* 卡片背景 */
+    --divider: #EEEEEE;          /* 分隔線 */
+}
+
+/* 文章容器 */
+.article-container {
+    background-color: var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 40px;
+    margin: 30px 0;
+    border-radius: 8px;
+}
+
+/* 文章標題區 */
+.article-container header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--divider);
+    padding-bottom: 25px;
+}
+
+.article-container h1 {
+    font-size: 2.4rem;
+    margin-bottom: 12px;
+    color: var(--primary-dark);
+    line-height: 1.3;
+}
+
+.article-container .subtitle {
+    font-size: 1.2rem;
+    color: var(--text-medium);
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.article-container .byline {
+    font-style: italic;
+    color: var(--text-light);
+    margin-top: 15px;
+    font-size: 0.95rem;
+}
+
+/* 導言區 */
+.article-container .lead {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 25px 0;
+    padding: 20px;
+    border-left: 4px solid var(--primary);
+    background-color: var(--primary-very-light);
+    border-radius: 0 6px 6px 0;
+}
+
+/* 段落標題 */
+.article-container h2 {
+    font-size: 1.7rem;
+    margin-top: 45px;
+    margin-bottom: 20px;
+    color: var(--primary);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--divider);
+    position: relative;
+}
+
+.article-container h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 80px;
+    height: 3px;
+    background-color: var(--primary);
+}
+
+.article-container h3 {
+    font-size: 1.4rem;
+    margin-top: 30px;
+    color: var(--primary-dark);
+    position: relative;
+    padding-left: 16px;
+}
+
+.article-container h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10%;
+    width: 6px;
+    height: 80%;
+    background-color: var(--primary-light);
+    border-radius: 3px;
+}
+
+/* 段落文字 */
+.article-container p {
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+/* 圖表容器 */
+.article-container .chart-container {
+    margin: 35px 0;
+    width: 100%;
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--divider);
+}
+
+.article-container .chart-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 18px;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+}
+
+/* 表格樣式 */
+.article-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 30px 0;
+    font-size: 0.95rem;
+}
+
+.article-container table th {
+    background-color: var(--primary);
+    color: white;
+    text-align: left;
+    padding: 14px;
+    font-weight: 500;
+}
+
+.article-container table tr {
+    border-bottom: 1px solid var(--divider);
+}
+
+.article-container table tr:nth-child(even) {
+    background-color: var(--primary-very-light);
+}
+
+.article-container table td {
+    padding: 12px 14px;
+}
+
+/* 資料來源 */
+.article-container .source {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: -10px;
+    margin-bottom: 25px;
+    text-align: right;
+}
+
+/* 側邊註記 */
+.article-container .side-note {
+    background-color: var(--primary-very-light);
+    padding: 18px;
+    border-left: 4px solid var(--primary);
+    margin: 30px 0;
+    border-radius: 0 6px 6px 0;
+}
+
+/* 引用區塊 */
+.article-container .quote {
+    font-style: italic;
+    padding: 25px;
+    background-color: var(--background);
+    border-left: 4px solid var(--primary-light);
+    margin: 25px 0;
+    border-radius: 0 6px 6px 0;
+    position: relative;
+}
+
+.article-container .quote::before {
+    content: '❝';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 2rem;
+    color: var(--primary-very-light);
+    z-index: 0;
+}
+
+.article-container .quote::after {
+    content: '❞';
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 2rem;
+    color: var(--primary-very-light);
+    z-index: 0;
+}
+
+/* 相關新聞區 */
+.article-container .related-news {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid var(--divider);
+}
+
+.article-container .related-news h3 {
+    padding-left: 0;
+}
+
+.article-container .related-news h3::before {
+    display: none;
+}
+
+/* 標籤區 */
+.article-container .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 30px 0;
+}
+
+.article-container .tag {
+    background-color: var(--primary-very-light);
+    color: var(--primary-dark);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.article-container .tag:hover {
+    background-color: var(--primary);
+    color: white;
+} 

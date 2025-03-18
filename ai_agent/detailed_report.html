@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣預算分配爭議分析報告</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: #1a5276;
+            margin-bottom: 10px;
+        }
+        .date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 30px;
+        }
+        .visualization-container {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .visualization-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .analysis-section {
+            margin: 30px 0;
+        }
+        .conclusion {
+            background-color: #f2f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+        }
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            margin: 30px 0;
+            border: 1px solid #ecf0f1;
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .key-point {
+            background-color: #eaf2f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>台灣預算分配爭議分析報告</h1>
+        <div class="date">生成日期：<span id="current-date"></span></div>
+    </header>
+    
+    <section class="summary">
+        <h2>摘要</h2>
+        <p>
+            本報告基於2025年3月9日至12日的新聞報導，分析了台灣預算分配的主要爭議。近期台灣預算議題主要集中在國防預算、資安預算、普發現金及能源預算等方面。其中，美國要求台灣將國防預算提高至GDP的10%引發廣泛討論，而台灣目前國防預算約佔GDP 2.5%。在野黨刪減國防預算的行為引起美方關切，同時資安院預算被砍25%約兩億元，院長林盈達表示台灣資安預算「少了快一個零」。此外，國民黨提出的普發現金1萬元提案遭財政部反對，而撥補台電虧損預算1千億元遭砍可能導致電價上漲。本報告將透過多角度分析，客觀呈現各方立場及潛在影響。
+        </p>
+    </section>
+    
+    <section class="analysis-section">
+        <h2>主要發現</h2>
+        <div class="key-point">
+            <h3>國防預算爭議成為焦點</h3>
+            <p>國防預算議題在近期新聞中佔據主導地位，美國官方多次表達對台灣國防支出的期望，要求提高至GDP的10%。若達此目標，台灣國防預算將高達2.5兆元，約佔台灣年度總預算3兆元的83%，引發各界對預算可行性與合理性的討論。</p>
+        </div>
+        
+        <div class="key-point">
+            <h3>朝野對預算分配存在明顯分歧</h3>
+            <p>2025年台灣國防預算為4760億元，為歷年最高，但仍遭在野黨刪減約46.8億元，引發美方關切。民進黨支持增加國防預算，而國民黨與民眾黨則質疑過高國防預算的合理性，強調需平衡各項支出。</p>
+        </div>
+        
+        <div class="key-point">
+            <h3>資安預算不足問題浮現</h3>
+            <p>資安院預算被砍25%約兩億元，院長林盈達表示台灣資安預算「少了快一個零」，資安署與資安院預算加總僅8-9億元，而林盈達認為應達百億元級別，凸顯台灣在數位安全領域投資不足的問題。</p>
+        </div>
+        
+        <div class="key-point">
+            <h3>能源預算爭議可能影響民生</h3>
+            <p>撥補台電虧損預算1千億元遭砍，台電負債接近5千億元已達舉債上限，若不調整財務，未來舉債將有困難，可能導致電價上漲，直接影響民生經濟。</p>
+        </div>
+    </section>
+    
+    <section class="visualization-container">
+        <h2 class="visualization-title">台灣預算相關新聞主題分類分析</h2>
+        <p>以下圖表展示了2025年3月9日至12日期間，台灣預算相關新聞的主題分布情況。從數據可見，國防預算議題在近期新聞中佔據主導地位，其次是財政預算分配與美國對台灣預算的建議。</p>
+        <div class="iframe-container">
+            <iframe srcdoc='<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>台灣預算相關新聞分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>台灣預算相關新聞主題分類分析</h1>
+        
+        <div class="chart-container">
+            <canvas id="budgetTopicsChart"></canvas>
+        </div>
+        
+        <div class="legend">
+            <p><strong>圖表說明：</strong> 本圖表根據2025年3月9日至12日的新聞報導，對台灣預算相關議題進行分類統計。從圖表可見，國防預算議題在近期新聞中佔據主導地位，其次是財政預算分配與美國對台灣預算的建議。這反映了當前台灣預算討論的焦點集中在國家安全與國際關係層面。</p>
+        </div>
+        
+        <div class="footer">
+            <p>數據來源：2025年3月9日至12日台灣各大新聞媒體 | 分析日期：2025年3月12日</p>
+        </div>
+    </div>
+    
+    <script>
+        // 分析新聞數據，提取主要預算相關主題
+        const budgetTopics = [
+            { topic: "國防預算爭議", count: 9 },
+            { topic: "美國對台預算建議", count: 5 },
+            { topic: "財政預算分配", count: 6 },
+            { topic: "資安預算不足", count: 2 },
+            { topic: "普發現金討論", count: 1 },
+            { topic: "能源預算問題", count: 1 }
+        ];
+        
+        // 按數量排序主題
+        budgetTopics.sort((a, b) => b.count - a.count);
+        
+        // 提取排序後的標籤和數據
+        const topics = budgetTopics.map(item => item.topic);
+        const counts = budgetTopics.map(item => item.count);
+        
+        // 定義漸變色彩方案
+        const generateGradientColors = (count) => {
+            const baseColor = [65, 105, 225]; // 皇家藍
+            const colors = [];
+            const backgroundColors = [];
+            const borderColors = [];
+            
+            for (let i = 0; i < count; i++) {
+                const opacity = 1 - (i * 0.7 / count);
+                colors.push(`rgba(${baseColor[0]}, ${baseColor[1]}, ${baseColor[2]}, ${opacity})`);
+                backgroundColors.push(`rgba(${baseColor[0]}, ${baseColor[1]}, ${baseColor[2]}, ${opacity * 0.7})`);
+                borderColors.push(`rgba(${baseColor[0]}, ${baseColor[1]}, ${baseColor[2]}, ${opacity + 0.2})`);
+            }
+            
+            return { backgroundColors, borderColors };
+        };
+        
+        const { backgroundColors, borderColors } = generateGradientColors(topics.length);
+        
+        // 創建水平條形圖
+        const ctx = document.getElementById("budgetTopicsChart").getContext("2d");
+        const chart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: topics,
+                datasets: [{
+                    label: "新聞報導數量",
+                    data: counts,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: "y",  // 水平條形圖
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "2025年3月台灣預算相關新聞主題分布",
+                        font: {
+                            size: 18,
+                            weight: "bold"
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `報導數量: ${context.parsed.x} 則`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "新聞報導數量",
+                            font: {
+                                weight: "bold"
+                            }
+                        },
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "預算相關主題",
+                            font: {
+                                weight: "bold"
+                            }
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        });
+        
+        // 設置圖表高度以適應內容
+        document.querySelector(".chart-container").style.height = `${topics.length * 50 + 150}px`;
+    </script>
+</body>
+</html>'></iframe>
+        </div>
+        <p>分析：從主題分類分析可見，國防預算爭議在近期新聞中佔據主導地位（9則報導），其次是財政預算分配（6則）與美國對台預算建議（5則）。這反映了當前台灣預算討論的焦點集中在國家安全與國際關係層面，特別是美國對台灣國防支出的期望與台灣實際財政能力之間的平衡問題。</p>
+    </section>
+    
+    <section class="visualization-container">

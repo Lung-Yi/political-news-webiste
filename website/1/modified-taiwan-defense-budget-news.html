@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣國防預算之爭：美方期望與財政現實的拉鋸戰 | 環球視角</title>
+    <meta name="description" content="美國國防部次長提名人柯伯吉要求台灣將國防預算提高至GDP的10%，引發台灣政界激烈討論。本文深入分析台灣在國際壓力與國家財政現實間的拉鋸。">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入Chart.js庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- 引入樣式表 -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/components/header.css">
+    <link rel="stylesheet" href="../assets/css/components/footer.css">
+    <link rel="stylesheet" href="../assets/css/components/cards.css">
+    <link rel="stylesheet" href="../assets/css/components/article.css">
+    <!-- 網站圖標 -->
+    <link rel="icon" href="../assets/images/favicon.ico">
+    <style>
+        /* 為圖表容器添加額外樣式 */
+        .chart-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部導航 -->
+    <header class="header">
+        <div class="top-bar">
+            <div class="container">
+                <div class="top-bar-left">
+                    <div class="date">2025年3月15日 星期五</div>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook"><span class="icon icon-facebook"></span></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><span class="icon icon-twitter"></span></a>
+                        <a href="#" class="social-link" aria-label="LinkedIn"><span class="icon icon-linkedin"></span></a>
+                        <a href="#" class="social-link" aria-label="Instagram"><span class="icon icon-instagram"></span></a>
+                    </div>
+                </div>
+                <div class="top-bar-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="搜尋新聞..." aria-label="搜尋新聞">
+                        <button type="button" class="search-button" aria-label="搜尋按鈕">
+                            <span class="icon icon-search"></span>
+                        </button>
+                    </div>
+                    <div class="user-actions">
+                        <a href="#" class="btn btn-subscribe">訂閱</a>
+                        <a href="#" class="btn btn-login">登入</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-header">
+            <div class="container">
+                <div class="logo">
+                    <a href="../index.html">
+                        <img src="../assets/images/logo.png" alt="環球視角 Logo">
+                    </a>
+                </div>
+                
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="../index.html">首頁</a></li>
+                        <li class="nav-item active"><a href="../pages/domestic/index.html">國內政治</a></li>
+                        <li class="nav-item"><a href="../pages/international/index.html">國際政治</a></li>
+                        <li class="nav-item"><a href="../pages/finance/index.html">金融財經</a></li>
+                        <li class="nav-item"><a href="../pages/opinion/index.html">評論</a></li>
+                        <li class="nav-item"><a href="../pages/analysis/index.html">深度分析</a></li>
+                    </ul>
+                </nav>
+                
+                <button class="mobile-menu-toggle" aria-label="開啟選單">
+                    <span class="icon icon-menu"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 文章內容 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="article-container">
+                <header>
+                    <h1>台灣國防預算之爭：美方期望與財政現實的拉鋸戰</h1>
+                    <div class="subtitle">國防預算應占GDP 10%? 專家：「台灣恐將社會福利、教育都不用做了」</div>
+                    <div class="byline">特派記者 | 2025年3月15日</div>
+                </header>
+
+                <div class="lead">
+                    美國國防部次長提名人柯伯吉近日在參議院聽證會要求台灣將國防預算提高至GDP的10%，引發台灣政界激烈討論。面對國際壓力與國家財政現實間的拉鋸，台灣該如何取捨？
+                </div>
+
+                <p>美國國防部次長提名人柯伯吉在參議院軍事委員會聽證會明確表示，台灣當前的國防開支「遠低於」GDP的3%，「做得太少」，應將國防預算占GDP比例提高到10%，才能有效嚇阻中國入侵，避免戰爭。這項言論迅速引發台灣朝野熱烈討論，多位政府高層與在野黨人士紛紛提出回應。</p>
+
+                <p>行政院長卓榮泰在立法院接受質詢時表態，台灣無法負擔將國防支出提升至GDP 10%，「2025年不可能，未來也要衡量國家財政狀況」。國防部長顧立雄則明確表示，依照賴清德總統指示，國防預算會盡量達到GDP 3%的目標。</p>
+
+                <div class="chart-container">
+                    <div class="chart-title">圖1：台灣國防預算佔GDP比例現況與各方期望值</div>
+                    <div class="chart-wrapper">
+                        <canvas id="defensePercentageChart"></canvas>
+                    </div>
+                    <div class="source">資料來源：多則新聞報導綜合整理</div>
+                </div>
+
+                <h2>財政現實：GDP 10%將使其他預算空間僅剩一成</h2>
+
+                <p>根據多位經濟與軍事專家分析，2025年台灣GDP預估值約為26兆4,493億元新台幣，若國防預算達到GDP 10%，總額將高達新台幣2兆6,449億元，相當於現行國防預算的4倍以上。這將占2025年中央政府總預算歲出（3兆1,324億元）的84%至90%，導致政府在教育、醫療、社會福利、基礎建設等其他領域的支出僅剩約10%至16%的預算空間。</p>
+
+                <p>中國國民黨立委陳玉珍受訪表示：「台灣一年總預算不過新台幣3兆元，如果將近9成預算都拿去向美國買武器，台灣什麼都不用做了，社會福利都不用做了，教育不用做了，所有交通建設都不必做了。」</p>
+
+                <div class="chart-container">
+                    <div class="chart-title">圖2：台灣國防預算與GDP成長關係（2018-2025年）</div>
+                    <div class="chart-wrapper">
+                        <canvas id="defenseGdpChart"></canvas>
+                    </div>
+                    <div class="source">資料來源：國防部、行政院主計總處及民眾黨提供的數據綜合整理</div>
+                </div>
+
+                <h2>專家建議：GDP 4%可能是務實選擇</h2>
+
+                <p>面對美方期望與財政現實的落差，有專家提出折衷方案。一位專家在上報發表投書指出，台灣應務實達成國防支出佔GDP 4%的目標。該專家建議在2026-2028年間逐步提升國防預算，具體方案包括：提高經常性國防支出至8,400億元（增加2,000億元），並在2025-2028年間編列6,000億元特別國防預算，用於採購F-16V戰機、MQ-9B無人機等戰略關鍵軍購項目。</p>
+
+                <p>淡江大學國際事務與戰略研究所助理教授林穎佑表示，目前台灣國防預算約占GDP 2.5%，「即使要占GDP的5%，台灣整個年度的預算編列就會出現排擠效應，將會面臨很大壓力，幾乎是不可能。」</p>
+
+                <div class="side-note">
+                    國防安全研究院中共政軍與作戰概念研究所副研究員李冠成認為，GDP的占比不應是衡量台灣展現防衛決心的唯一標準。他指出，中國國防預算每年都沒有超過GDP 1.5%，但整體數字卻年增7%左右，並有諸多隱藏數字，實際國防開銷可能是官方公布的1.5倍。
+                </div>
+
+                <h2>經濟表現與國防需求的平衡</h2>
+
+                <p>值得注意的是，台灣在2020-2021年COVID-19疫情期間經濟表現卓越，這段期間GDP成長率分別達到3.42%和6.72%。專家分析，這主要歸功於台灣優異的疫情控制、半導體產業的全球需求激增，以及供應鏈重組效應。但這樣的經濟增長是否能持續，以支撐大幅增加的國防支出，仍值得商榷。</p>
+
+                <p>經濟學家王健全指出：「台灣經濟成長的動能主要來自高科技產業，尤其是半導體。如果將過多資源投入國防，可能反而降低台灣高科技產業的競爭力，長期來看反而不利國家安全。一個健康的經濟體系才是最可靠的國防後盾。」</p>
+
+                <h2>美方關切與國內爭論</h2>
+
+                <p>美國在台協會（AIT）處長谷立言接受媒體專訪時表示，他有信心台灣國會無論是藍、綠、白各黨，都了解台灣安全的重要性，也了解支持傳統軍事力量與社會韌性等台灣防衛能力的重要性。而美國聯邦參議員蘇利文則對台灣立法院在野黨提案刪減國防預算表達疑慮，抨擊為「玩危險遊戲」。</p>
+
+                <p>對此，民眾黨3月11日在社群媒體發文回應，列出2018-2025年國防預算數據，強調2025年國防預算4,760億元是歷年最高，刪減的46.8億元是歷年最少。民眾黨指出，2025年刪除的46.8億元中，有97.8%是削減連民進黨都同意刪減的獵鴞專案預算。</p>
+
+                <div class="chart-container">
+                    <div class="chart-title">圖3：若國防預算達GDP 10%對其他預算的影響</div>
+                    <div class="chart-wrapper">
+                        <canvas id="budgetImpactChart"></canvas>
+                    </div>
+                    <div class="source">資料來源：根據新聞中專家分析數據模擬</div>
+                </div>
+
+                <h2>2025年政府總預算概況</h2>
+
+                <p>國民黨立法院黨團總召傅崐萁指出，今年通過的2兆9,884億元總預算創下歷史新高，比去年增加1,365億元。各部會預算均較去年有所增加：國防部增加400億元、內政部增加400億元（其中國土署增280億元，消防署增加一倍）、交通部增加389億元、衛福部增加317億元、教育部增加278億元等。</p>
+
+                <p>然而，台灣仍面臨諸多財政挑戰。數發部資安院長林盈達3月12日表示，資安院今年預算被砍25%約兩億元，資安署與資安院預算加總僅8-9億元，他認為應達百億元，「少了快一個零」。此外，立法院審議總預算覆議案時，撥補台電虧損預算1,000億元遭砍，引發電價上漲疑慮，經濟部節能電器補助計畫19.2億元預算遭刪，影響約60萬台冷氣的補貼。</p>
+
+                <h2>媒體立場分析</h2>
+
+                <table>
+                    <tr>
+                        <th>媒體</th>
+                        <th>報導角度</th>
+                        <th>引述來源</th>
+                        <th>關注焦點</th>
+                    </tr>
+                    <tr>
+                        <td>中時新聞網</td>
+                        <td>政府難以負擔更高國防預算</td>
+                        <td>行政院長卓榮泰</td>
+                        <td>強調台灣無法負擔GDP 10%的國防預算；關注台積電赴美設廠對國安影響</td>
+                    </tr>
+                    <tr>
+                        <td>中央廣播電臺</td>
+                        <td>國防預算評估標準多元性</td>
+                        <td>學者(林穎佑、李冠成)</td>
+                        <td>分析GDP占比不應是唯一標準；探討預算排擠效應</td>
+                    </tr>
+                    <tr>
+                        <td>奇摩新聞</td>
+                        <td>民眾黨辯護立場</td>
+                        <td>民眾黨聲明</td>
+                        <td>列舉歷年國防預算數據；強調2025年預算刪減最少</td>
+                    </tr>
+                    <tr>
+                        <td>自由時報</td>
+                        <td>預算削減對國安影響</td>
+                        <td>AIT處長、政府官員</td>
+                        <td>突出美方關切；強調削減預算危害國家安全</td>
+                    </tr>
+                    <tr>
+                        <td>台灣華報</td>
+                        <td>批評民進黨政府</td>
+                        <td>傅崐萁立委言論</td>
+                        <td>強調總預算創新高；批評花東建設承諾未兌現</td>
+                    </tr>
+                </table>
+
+                <h2>中國因素：對台灣國防預算的外部壓力</h2>
+
+                <p>根據法新社報導，中國軍方發言人吳謙於3月9日警告，如果台灣分裂主義加強，中國將收緊台灣脖子上的「絞索」。中國已宣布2025年將國防預算增加7.2%，達17,847億元人民幣（約2,457億美元）。根據斯德哥爾摩國際和平研究所（Sipri）數據，到2023年，中國軍費開支不到美國的三分之一。</p>
+
+                <p>近期，台灣國防部譴責中國軍隊在台灣本島以南約74公里處進行無預警實彈射擊演習，而中國軍方發言人稱這只是「例行訓練」，並指控台北策劃「媒體炒作」。</p>
+
+                <div class="quote">
+                    國防安全研究院李冠成副研究員：「台灣應該要根據自己所面臨的威脅情勢，以及相關的國防準備和戰略，精算出自己的國防預算，並進一步和美方溝通，千萬不要拘泥在數字的框架上，意義其實不大。」
+                </div>
+
+                <h2>未來展望</h2>
+
+                <p>隨著台灣立法院將針對「114年度中央政府總預算案」覆議案和「財政收支劃分法修正案」覆議案進行表決，國防預算爭議可能進一步擴大。立院外交及國防委員會召委沈伯洋警告，財劃法對國防的傷害比削減預算更大，若覆議案未過，可能傳遞「台灣對國防完全不在意」的訊息給國際。</p>
+
+                <p>行政院長卓榮泰表示，若總預算覆議案失敗，追加預算是程序之一，但限制很多，尋求憲政救濟將是最後選擇。這場關於國防預算的爭論，不僅涉及國家安全與財政現實的平衡，更反映了台灣在美中戰略競爭下的困境與抉擇。</p>
+
+                <div class="side-note">
+                    <strong>日本模式值得借鑑？</strong> 當美國要求日本提高防衛費至GDP的3%時，日本首相石破茂在參院預算委員會議答詢時表示：「日本防衛費是日本決定的事情，如果政府認為有需要，將編列預算，並經過國會審議，因此日本的防衛費不會應他國要求來決定，包括美國。」這種不卑不亢的態度，或許為台灣提供了另一種思考方向。
+                </div>
+
+                <div class="tags">
+                    <span class="tag">國防預算</span>
+                    <span class="tag">台美關係</span>
+                    <span class="tag">財政政策</span>
+                    <span class="tag">立法院</span>
+                    <span class="tag">兩岸關係</span>
+                    <span class="tag">經濟成長</span>
+                </div>
+
+                <div class="related-news">
+                    <h3>相關報導</h3>
+                    <ul>
+                        <li><a href="#">美國重申對台安全承諾，強調協助台灣建構不對稱戰力</a></li>
+                        <li><a href="#">立院表決總預算覆議案 朝野激辯國防與民生優先順序</a></li>
+                        <li><a href="#">專訪：前國防部長談台灣防衛策略與預算配置關鍵</a></li>
+                        <li><a href="#">台灣經濟成長與政府預算分析：平衡發展的挑戰</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>關於我們</h4>
+                    <p>環球視角致力於提供最專業、最深入的政治新聞與分析</p>
+                </div>
+                <div class="footer-section">
+                    <h4>聯絡資訊</h4>
+                    <p>Email: contact@globalperspective.tw</p>
+                    <p>電話: (02) 2345-6789</p>
+                </div>
+                <div class="footer-section">
+                    <h4>追蹤我們</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Facebook</a>
+                        <a href="#" class="social-link">Twitter</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 環球視角. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 圖表腳本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 國防預算和GDP成長數據
+            const defenseData = [
+                { year: 2018, budget: 3278, gdpGrowthRate: 2.91, defenseToGDP: 1.78, nominalGDP: 18.42 },
+                { year: 2019, budget: 3460, gdpGrowthRate: 3.06, defenseToGDP: 1.82, nominalGDP: 18.97 },
+                { year: 2020, budget: 3580, gdpGrowthRate: 3.42, defenseToGDP: 1.79, nominalGDP: 20.02 },
+                { year: 2021, budget: 3668, gdpGrowthRate: 6.72, defenseToGDP: 1.68, nominalGDP: 21.77 },
+                { year: 2022, budget: 3726, gdpGrowthRate: 2.68, defenseToGDP: 1.63, nominalGDP: 22.82 },
+                { year: 2023, budget: 4150, gdpGrowthRate: 1.12, defenseToGDP: 1.76, nominalGDP: 23.60 },
+                { year: 2024, budget: 4405, gdpGrowthRate: 3.18, defenseToGDP: 1.75, nominalGDP: 25.10 },
+                { year: 2025, budget: 4760, gdpGrowthRate: 2.85, defenseToGDP: 1.80, nominalGDP: 26.45 }
+            ];
+
+            try {
+                // 圖1：台灣國防預算佔GDP比例現況與各方期望值
+                const ctx1 = document.getElementById('defensePercentageChart');
+                if (ctx1) {
+                    new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: ['現況 (2.5%)', '賴總統目標 (3%)', '專家建議 (4%)', '美方期望 (10%)'],
+                            datasets: [{
+                                label: 'GDP百分比',
+                                data: [2.5, 3, 4, 10],
+                                backgroundColor: [
+                                    'rgba(93, 64, 55, 0.8)',
+                                    'rgba(121, 85, 72, 0.8)',
+                                    'rgba(161, 136, 127, 0.8)',
+                                    'rgba(255, 87, 34, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(93, 64, 55, 1)',
+                                    'rgba(121, 85, 72, 1)',
+                                    'rgba(161, 136, 127, 1)',
+                                    'rgba(255, 87, 34, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'GDP百分比'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.error('無法找到圖表1的Canvas元素');
+                }
+
+                // 圖2：台灣國防預算與GDP成長關係
+                const ctx2 = document.getElementById('defenseGdpChart');
+                if (ctx2) {
+                    new Chart(ctx2, {
+                        type: 'bar',
+                        data: {
+                            labels: defenseData.map(d => d.year),
+                            datasets: [
+                                {
+                                    type: 'bar',
+                                    label: '國防預算 (億新台幣)',
+                                    data: defenseData.map(d => d.budget),
+                                    backgroundColor: 'rgba(121, 85, 72, 0.7)',
+                                    borderColor: 'rgba(121, 85, 72, 1)',
+                                    borderWidth: 1,
+                                    yAxisID: 'y'
+                                },
+                                {
+                                    type: 'line',
+                                    label: 'GDP成長率 (%)',
+                                    data: defenseData.map(d => d.gdpGrowthRate),
+                                    backgroundColor: 'rgba(255, 152, 0, 0.2)',
+                                    borderColor: 'rgba(255, 152, 0, 1)',
+                                    borderWidth: 2,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    fill: false,
+                                    yAxisID: 'y1'
+                                },
+                                {
+                                    type: 'line',
+                                    label: '國防預算佔GDP比例 (%)',
+                                    data: defenseData.map(d => d.defenseToGDP),
+                                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                                    borderColor: 'rgba(76, 175, 80, 1)',
+                                    borderWidth: 2,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    fill: false,
+                                    yAxisID: 'y1'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    type: 'linear',
+                                    position: 'left',
+                                    title: {
+                                        display: true,
+                                        text: '國防預算 (億新台幣)'
+                                    },
+                                    min: 3000,
+                                    max: 5000
+                                },
+                                y1: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: '百分率 (%)'
+                                    },
+                                    min: 0,
+                                    max: 8,
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                },
+                                y2: {
+                                    display: false, // 隱藏第三個Y軸以減少複雜度
+                                    type: 'linear',
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: '國防預算佔GDP比例 (%)'
+                                    },
+                                    min: 1.5,
+                                    max: 2.5,
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.error('無法找到圖表2的Canvas元素');
+                }
+
+                // 圖3：若國防預算達GDP 10%對其他預算的影響
+                const ctx3 = document.getElementById('budgetImpactChart');
+                if (ctx3) {
+                    new Chart(ctx3, {
+                        type: 'bar',
+                        data: {
+                            labels: ['現況', '美方期望'],
+                            datasets: [
+                                {
+                                    label: '國防支出',
+                                    data: [25, 84],
+                                    backgroundColor: ['rgba(93, 64, 55, 0.8)', 'rgba(255, 87, 34, 0.8)']
+                                },
+                                {
+                                    label: '其他支出',
+                                    data: [75, 16],
+                                    backgroundColor: ['rgba(215, 204, 200, 0.8)', 'rgba(215, 204, 200, 0.8)']
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            indexAxis: 'y', // 橫條圖更容易比較
+                            scales: {
+                                x: {
+                                    stacked: true,
+                                    max: 100,
+                                    title: {
+                                        display: true,
+                                        text: '中央政府總預算中的佔比 (%)'
+                                    }
+                                },
+                                y: {
+                                    stacked: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.error('無法找到圖表3的Canvas元素');
+                }
+            } catch (error) {
+                console.error('圖表繪製錯誤:', error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+/* 頁頭樣式 - header.css */
+
+/* 頂部導航欄 */
+.header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+}
+
+/* 頂部狀態欄 */
+.top-bar {
+    background-color: var(--primary-dark);
+    color: white;
+    padding: var(--spacing-sm) 0;
+    font-size: 0.875rem;
+}
+
+.top-bar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-bar-left, 
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* 日期顯示 */
+.date {
+    font-weight: 500;
+}
+
+/* 社交媒體連結 */
+.social-links {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: background-color var(--transition-fast);
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* 搜尋框 */
+.search-box {
+    display: flex;
+    height: 32px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.search-box input {
+    width: 180px;
+    height: 100%;
+    border: none;
+    padding: 0 var(--spacing-md);
+    outline: none;
+    font-size: 0.875rem;
+}
+
+.search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: var(--primary);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.search-button:hover {
+    background-color: var(--primary-light);
+}
+
+/* 用戶操作按鈕 */
+.user-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.user-actions .btn {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.btn-subscribe {
+    background-color: var(--primary-light);
+    color: white;
+}
+
+.btn-subscribe:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-login:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 主頁頭 */
+.main-header {
+    background-color: white;
+    padding: var(--spacing-md) 0;
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+.logo {
+    height: 50px;
+}
+
+.logo img {
+    height: 100%;
+    width: auto;
+}
+
+/* 主導航 */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    gap: var(--spacing-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-item a {
+    display: block;
+    color: var(--text-dark);
+    font-weight: 500;
+    padding: var(--spacing-xs) 0;
+    transition: color var(--transition-fast);
+}
+
+.nav-item a:hover,
+.nav-item.active a {
+    color: var(--primary);
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: width var(--transition-normal);
+}
+
+.nav-item:hover::after,
+.nav-item.active::after {
+    width: 100%;
+}
+
+/* 手機選單按鈕 */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+/* 響應式設計 */
+@media (max-width: 992px) {
+    .nav-list {
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar .container {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .main-nav {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    /* 展開時的手機選單 */
+    .main-nav.active {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        box-shadow: var(--shadow-md);
+        z-index: 1000;
+    }
+    
+    .main-nav.active .nav-list {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .main-nav.active .nav-item {
+        width: 100%;
+    }
+    
+    .main-nav.active .nav-item a {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--divider);
+    }
+    
+    .main-nav.active .nav-item::after {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .top-bar-left,
+    .top-bar-right {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .search-box {
+        width: 100%;
+    }
+    
+    .search-box input {
+        width: 100%;
+    }
+}
