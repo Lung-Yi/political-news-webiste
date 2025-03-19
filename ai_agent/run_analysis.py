@@ -5,9 +5,9 @@ import os
 from news_analysis_agent import NewsAnalysisAgent, create_news_analysis_agent
 
 # 方法一：基本的流程化分析（適合批處理）
-def basic_analysis():
+def basic_analysis(data_path):
     # 1. 加載爬蟲獲取的新聞資料
-    with open("../updated_news_data.json", "r", encoding="utf-8") as f:
+    with open(data_path, "r", encoding="utf-8") as f:
         news_data = json.load(f)
     
     # 2. 初始化分析 Agent
@@ -29,11 +29,11 @@ def basic_analysis():
     print(f"需要使用的工具: {analysis_result.required_tools}")
     
     # 3.2 單獨生成可視化
-    visualizations = agent.generate_visualizations(news_data, analysis_result.required_tools)
+    visualizations = agent.generate_visualizations(analysis_result.required_tools)
     print(f"生成了 {len(visualizations)} 個可視化圖表")
     
     # 3.3 生成最終報告
-    report = agent.create_final_report(news_data, analysis_result, visualizations)
+    report = agent.create_final_report(analysis_result, visualizations)
     agent.save_report(report, "detailed_report.html")
 
 
@@ -100,7 +100,8 @@ def basic_analysis():
 
 if __name__ == "__main__":
     # 選擇要運行的分析方法
-    basic_analysis()
+    file_path = "../updated_news_data.json"
+    basic_analysis(file_path)
     # interactive_analysis()
     
     # API 式使用範例

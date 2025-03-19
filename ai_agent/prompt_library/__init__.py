@@ -1,2 +1,2 @@
-from .prompt_library import *
+from .prompts import *
 from .utils import *

@@ -58,7 +58,7 @@ class NewsAnalysisAgent:
                  api_key: Optional[str] = None, 
                  model_name: str = "claude-3-7-sonnet-20250219",
                  temperature: float = 0.3,
-                 templates_dir: str = "../website/templates"):
+                 templates_dir: Optional[str] = None):
         """
         初始化新聞分析 Agent
         
@@ -66,8 +66,23 @@ class NewsAnalysisAgent:
             api_key: LLM API 金鑰，如果是 None 則從環境變量獲取
             model_name: 要使用的模型名稱
             temperature: 模型溫度
-            templates_dir: HTML 模板所在目錄
+            templates_dir: HTML 模板所在目錄，如果是 None 則使用預設路徑
         """
+        # 獲取當前檔案的目錄
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # 如果沒有指定 templates_dir，使用預設路徑
+        if templates_dir is None:
+            # 構建預設的模板目錄路徑（上一層目錄的 website/templates）
+            self.templates_dir = os.path.abspath(os.path.join(current_dir, "..", "website", "templates"))
+        else:
+            # 如果指定了路徑，轉換為絕對路徑
+            self.templates_dir = os.path.abspath(templates_dir)
+            
+        logger.info(f"使用模板目錄：{self.templates_dir}")
+        
+        self.temperature = temperature
+        self.model_name = model_name
+        
         # 導入 Anthropic 相關模組
         from langchain_anthropic import ChatAnthropic
         
@@ -75,10 +90,6 @@ class NewsAnalysisAgent:
         if not self.api_key:
             raise ValueError("API 金鑰未提供，請通過參數或環境變量 ANTHROPIC_API_KEY 設置")
             
-        self.templates_dir = templates_dir
-        self.temperature = temperature
-        self.model_name = model_name
-        
         # 初始化 Claude LLM
         self.visualization_llm = ChatAnthropic(
             model=model_name,
@@ -105,9 +116,10 @@ class NewsAnalysisAgent:
         ]
         
         # 檢查模板目錄是否存在
-        if not os.path.exists(templates_dir):
-            os.makedirs(templates_dir)
-            logger.warning(f"模板目錄 {templates_dir} 不存在，已自動創建")
+        if not os.path.exists(self.templates_dir):
+            error_msg = f"錯誤：模板目錄不存在：{self.templates_dir}"
+            logger.error(error_msg)
+            raise FileNotFoundError(error_msg)
             
         # 初始化輸出解析器
         self.analysis_parser = PydanticOutputParser(pydantic_object=AnalysisResult)
@@ -121,6 +133,13 @@ class NewsAnalysisAgent:
                 anthropic_api_key=self.api_key,
                 max_tokens=1000
             )
+        )
+        
+        # 創建共享的記憶
+        self.memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True,
+            output_key="output"  # 指定輸出鍵
         )
         
         # 初始化工具鏈
@@ -141,6 +160,7 @@ class NewsAnalysisAgent:
         self.analysis_chain = LLMChain(
             llm=self.visualization_llm,
             prompt=analysis_prompt,
+            memory=self.memory,  # 添加記憶
             output_key="analysis_result",
             verbose=True
         )
@@ -151,7 +171,7 @@ class NewsAnalysisAgent:
                 SystemMessagePromptTemplate.from_template(visualization_system_template),
                 HumanMessagePromptTemplate.from_template(visualization_human_template)
             ],
-            input_variables=["tool", "news_data", "template"]
+            input_variables=["tool", "template"]
         )
         
         # 最終報告生成鏈
@@ -160,12 +180,14 @@ class NewsAnalysisAgent:
                 SystemMessagePromptTemplate.from_template(report_system_template),
                 HumanMessagePromptTemplate.from_template(report_human_template)
             ],
-            input_variables=["news_data", "analysis_summary", "visualizations", "report_template"]
+            input_variables=["analysis_summary", "visualizations", "report_template"]
         )
         
         self.report_chain = LLMChain(
             llm=self.report_llm,
             prompt=self.report_prompt,
+            memory=self.memory,  # 添加記憶
+            output_key="report_result",
             verbose=True
         )
     
@@ -179,6 +201,12 @@ class NewsAnalysisAgent:
         Returns:
             分析結果物件
         """
+        # 將新聞數據存入記憶
+        self.memory.save_context(
+            {"input": "新聞數據"},
+            {"output": json.dumps(news_data, ensure_ascii=False, indent=2)}
+        )
+        
         tools_str = "\n".join([f"{i+1}. {tool}" for i, tool in enumerate(self.analysis_tools)])
         
         try:
@@ -188,7 +216,6 @@ class NewsAnalysisAgent:
                 news_data=json.dumps(news_data, ensure_ascii=False, indent=2)
             )
             
-            # 解析和修復輸出
             parsed_result = self.analysis_fixing_parser.parse(result)
             logger.info(f"新聞分析完成，需要使用工具: {parsed_result.required_tools}")
             
@@ -204,7 +231,7 @@ class NewsAnalysisAgent:
                 rationale={}
             )
     
-    def generate_visualizations(self, news_data: List[Dict[str, Any]], required_tools: List[str]) -> List[Visualization]:
+    def generate_visualizations(self, required_tools: List[str]) -> List[Visualization]:
         """
         第二步：根據分析結果為每種所需工具生成可視化圖表
         """
@@ -222,24 +249,22 @@ class NewsAnalysisAgent:
         for tool in required_tools:
             try:
                 # 讀取對應的 HTML 模板
-                template_path = os.path.join(self.templates_dir, f"{tool}_template.html")
-                if not os.path.exists(template_path):
-                    logger.warning(f"模板文件 {template_path} 不存在，將使用默認模板")
-                    template = self._get_default_template(tool)
-                else:
-                    with open(template_path, "r", encoding="utf-8") as f:
-                        template = f.read()
-                
+                template = self._get_default_template(tool)
+                if not template:
+                    logger.warning(f"模板文件 {tool} 不存在，將使用空白模板")
+
                 # 創建針對特定工具的視覺化生成鏈
                 visualization_chain = LLMChain(
                     llm=self.visualization_llm,
-                    prompt=self.visualization_prompt
+                    prompt=self.visualization_prompt,
+                    memory=self.memory,  # 添加記憶
+                    output_key="visualization_result",
+                    verbose=True
                 )
                 
-                # 生成可視化
+                # 生成可視化，使用記憶中的新聞數據
                 visualization_html = visualization_chain.run(
                     tool=tool,
-                    news_data=json.dumps(news_data, ensure_ascii=False, indent=2),
                     template=template
                 )
                 
@@ -271,14 +296,12 @@ class NewsAnalysisAgent:
         return visualizations
     
     def create_final_report(self, 
-                           news_data: List[Dict[str, Any]], 
-                           analysis_result: AnalysisResult,
-                           visualizations: List[Visualization]) -> str:
+                          analysis_result: AnalysisResult,
+                          visualizations: List[Visualization]) -> str:
         """
         第三步：整合所有可視化並生成最終的分析報告
         
         Args:
-            news_data: 爬蟲獲取的新聞資料
             analysis_result: 分析結果
             visualizations: 生成的可視化圖表列表
             
@@ -286,13 +309,9 @@ class NewsAnalysisAgent:
             完整的 HTML 報告
         """
         # 讀取報告模板
-        report_template_path = os.path.join(self.templates_dir, "report_template.html")
-        if not os.path.exists(report_template_path):
-            logger.warning(f"報告模板 {report_template_path} 不存在，將使用默認報告模板")
-            report_template = self._get_default_report_template()
-        else:
-            with open(report_template_path, "r", encoding="utf-8") as f:
-                report_template = f.read()
+        report_template = self._get_default_report_template()
+        if not report_template:
+            logger.warning("報告模板不存在，將使用空白模板")
         
         # 視覺化 HTML 代碼的準備
         visualizations_str = "\n\n".join([
@@ -303,7 +322,6 @@ class NewsAnalysisAgent:
         # 執行報告生成鏈
         try:
             final_report = self.report_chain.run(
-                news_data=json.dumps(news_data, ensure_ascii=False, indent=2),
                 analysis_summary=json.dumps(analysis_result.dict(), ensure_ascii=False, indent=2),
                 visualizations=visualizations_str,
                 report_template=report_template
@@ -353,10 +371,10 @@ class NewsAnalysisAgent:
         analysis_result = self.analyze_news_data(news_data)
         
         logger.info(f"2. 生成可視化圖表 (需要工具: {', '.join(analysis_result.required_tools)})...")
-        visualizations = self.generate_visualizations(news_data, analysis_result.required_tools)
+        visualizations = self.generate_visualizations(analysis_result.required_tools)
         
         logger.info("3. 創建最終報告...")
-        final_report = self.create_final_report(news_data, analysis_result, visualizations)
+        final_report = self.create_final_report(analysis_result, visualizations)
         
         self.save_report(final_report, output_path)
         
@@ -431,7 +449,7 @@ class VisualizationTool(BaseTool):
             news_data = input_data.get("news_data", [])
             tools = input_data.get("tools", [])
             
-            visualizations = self.agent.generate_visualizations(news_data, tools)
+            visualizations = self.agent.generate_visualizations(tools)
             return json.dumps([v.dict() for v in visualizations], ensure_ascii=False, indent=2)
         except Exception as e:
             return f"生成可視化時出錯: {str(e)}"
@@ -463,7 +481,7 @@ class ReportGenerationTool(BaseTool):
             analysis_result = AnalysisResult(**analysis_result_dict)
             visualizations = [Visualization(**v) for v in visualizations_dict]
             
-            final_report = self.agent.create_final_report(news_data, analysis_result, visualizations)
+            final_report = self.agent.create_final_report(analysis_result, visualizations)
             
             # 保存報告（如果指定了輸出路徑）
             output_path = input_data.get("output_path")
@@ -483,7 +501,7 @@ class ReportGenerationTool(BaseTool):
 def create_news_analysis_agent(api_key: Optional[str] = None, 
                              model_name: str = "claude-3-7-sonnet-20250219",  # 預設使用 Claude 模型
                              temperature: float = 0.2,
-                             templates_dir: str = "templates") -> Any:
+                             templates_dir: Optional[str] = None) -> Any:
     """
     創建一個基於 Langchain 的新聞分析 Agent，使用 Anthropic Claude 模型
     

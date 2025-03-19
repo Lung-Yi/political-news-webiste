@@ -2,4 +2,7 @@
 *.json
 *.zip
 *.txt
+*.html
 java_convert.py
+logs/
+!website/templates/*.html
