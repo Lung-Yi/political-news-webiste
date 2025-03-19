@@ -18,7 +18,9 @@ analysis_human_template = """請分析以下新聞數據：
 
 visualization_system_template = """你是一位專業的數據可視化專家。你需要根據提供的新聞數據，使用指定的分析工具創建一個專業的可視化圖表。"""
         
-visualization_human_template = """請根據我們之前對話的新聞數據，針對 {tool} 來創建一個專業的可視化圖表。
+visualization_human_template = """請根據我們以下的新聞數據，針對 {tool} 來創建一個專業的可視化圖表。
+
+{news_data}
 
 以下是 HTML 模板，請在保留基本結構的同時，修改其中的數據和視覺化代碼：
 ```html
@@ -38,15 +40,17 @@ visualization_human_template = """請根據我們之前對話的新聞數據，�
 
 report_system_template = """你是一位專業的新聞分析師，負責創建完整的新聞分析報告。報告應該專業且客觀公正，基於提供的分析結果和可視化圖表。"""
         
-report_human_template = """請之前我們對話歷史中的資料、還有你分析的結果資訊創建一份完整的新聞分析報告，你也需要參考以下資訊，並利用我提供的模板製作html報告：
+report_human_template = """請根據以下新聞資料、還有你分析的結果資訊創建一份完整的新聞分析報告，你也需要參考以下資訊，並利用我提供的模板製作html報告：
+1. 新聞資料：
+{news_data}
 
-1. 初步分析摘要：
+2. 初步分析摘要：
 {analysis_summary}
 
-2. 已生成的視覺化圖表：
+3. 已生成的視覺化圖表：
 {visualizations}
 
-3. 報告模板：
+4. 報告模板：
 ```html
 {report_template}
 ```

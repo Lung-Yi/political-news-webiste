@@ -23,18 +23,18 @@ def basic_analysis(data_path):
     
     # 如果需要查看分析的細節，可以使用下面的步驟
     
-    # 3.1 單獨執行分析步驟
-    analysis_result = agent.analyze_news_data(news_data)
-    print(f"主要主題: {analysis_result.main_topic}")
-    print(f"需要使用的工具: {analysis_result.required_tools}")
+    # # 3.1 單獨執行分析步驟
+    # analysis_result = agent.analyze_news_data(news_data)
+    # print(f"主要主題: {analysis_result.main_topic}")
+    # print(f"需要使用的工具: {analysis_result.required_tools}")
     
-    # 3.2 單獨生成可視化
-    visualizations = agent.generate_visualizations(analysis_result.required_tools)
-    print(f"生成了 {len(visualizations)} 個可視化圖表")
+    # # 3.2 單獨生成可視化
+    # visualizations = agent.generate_visualizations(analysis_result.required_tools)
+    # print(f"生成了 {len(visualizations)} 個可視化圖表")
     
-    # 3.3 生成最終報告
-    report = agent.create_final_report(analysis_result, visualizations)
-    agent.save_report(report, "detailed_report.html")
+    # # 3.3 生成最終報告
+    # report = agent.create_final_report(analysis_result, visualizations)
+    # agent.save_report(report, "detailed_report.html")
 
 
 # # 方法二：交互式 Agent（適合需要對話的情境）

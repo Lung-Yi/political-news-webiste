@@ -135,18 +135,11 @@ class NewsAnalysisAgent:
             )
         )
         
-        # 創建共享的記憶
-        self.memory = ConversationBufferMemory(
-            memory_key="chat_history",
-            return_messages=True,
-            output_key="output"  # 指定輸出鍵
-        )
-        
         # 初始化工具鏈
         self._initialize_chains()
     
     def _initialize_chains(self):
-        """初始化 Langchain 鏈"""
+        """初始化所有的 Langchain 鏈"""
         # 分析新聞數據的鏈        
         analysis_prompt = ChatPromptTemplate(
             messages=[
@@ -160,18 +153,17 @@ class NewsAnalysisAgent:
         self.analysis_chain = LLMChain(
             llm=self.visualization_llm,
             prompt=analysis_prompt,
-            memory=self.memory,  # 添加記憶
             output_key="analysis_result",
             verbose=True
         )
         
-        # 可視化生成鏈（這個將在運行時針對特定工具創建）       
+        # 可視化生成鏈 - 修改這裡，只使用必要的輸入變數     
         self.visualization_prompt = ChatPromptTemplate(
             messages=[
                 SystemMessagePromptTemplate.from_template(visualization_system_template),
                 HumanMessagePromptTemplate.from_template(visualization_human_template)
             ],
-            input_variables=["tool", "template"]
+            input_variables=["tool", "template", "news_data"],  # 添加 news_data
         )
         
         # 最終報告生成鏈
@@ -180,13 +172,12 @@ class NewsAnalysisAgent:
                 SystemMessagePromptTemplate.from_template(report_system_template),
                 HumanMessagePromptTemplate.from_template(report_human_template)
             ],
-            input_variables=["analysis_summary", "visualizations", "report_template"]
+            input_variables=["analysis_summary", "visualizations", "report_template", "news_data"]  # 添加 news_data
         )
         
         self.report_chain = LLMChain(
             llm=self.report_llm,
             prompt=self.report_prompt,
-            memory=self.memory,  # 添加記憶
             output_key="report_result",
             verbose=True
         )
@@ -201,37 +192,28 @@ class NewsAnalysisAgent:
         Returns:
             分析結果物件
         """
-        # 將新聞數據存入記憶
-        self.memory.save_context(
-            {"input": "新聞數據"},
-            {"output": json.dumps(news_data, ensure_ascii=False, indent=2)}
-        )
-        
+        news_data_str = json.dumps(news_data, ensure_ascii=False, indent=2)
         tools_str = "\n".join([f"{i+1}. {tool}" for i, tool in enumerate(self.analysis_tools)])
         
         try:
-            # 執行分析鏈
-            result = self.analysis_chain.run(
-                tools=tools_str,
-                news_data=json.dumps(news_data, ensure_ascii=False, indent=2)
-            )
+            # 執行分析鏈，使用字典方式傳遞參數
+            result = self.analysis_chain({
+                "news_data": news_data_str,
+                "tools": tools_str
+            })
             
-            parsed_result = self.analysis_fixing_parser.parse(result)
+            # 修改這裡，使用正確的鍵名獲取結果
+            parsed_result = self.analysis_fixing_parser.parse(result["analysis_result"])
             logger.info(f"新聞分析完成，需要使用工具: {parsed_result.required_tools}")
             
             return parsed_result
             
         except Exception as e:
-            logger.error(f"分析新聞數據時出錯: {str(e)}")
-            # 回傳一個預設的分析結果
-            return AnalysisResult(
-                main_topic="無法確定",
-                key_points=["分析過程中出現錯誤"],
-                required_tools=[],
-                rationale={}
-            )
+            error_msg = f"分析新聞數據時出錯: {str(e)}"
+            logger.error(error_msg)
+            raise Exception(error_msg)
     
-    def generate_visualizations(self, required_tools: List[str]) -> List[Visualization]:
+    def generate_visualizations(self, required_tools: List[str], news_data: str) -> List[Visualization]:
         """
         第二步：根據分析結果為每種所需工具生成可視化圖表
         """
@@ -241,9 +223,7 @@ class NewsAnalysisAgent:
         output_dir = "visualizations_html_files"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-            logger.info(f"創建可視化輸出目錄：{output_dir}")
         
-        # 生成時間戳，用於文件名
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
         for tool in required_tools:
@@ -253,51 +233,48 @@ class NewsAnalysisAgent:
                 if not template:
                     logger.warning(f"模板文件 {tool} 不存在，將使用空白模板")
 
-                # 創建針對特定工具的視覺化生成鏈
+                # 創建視覺化生成鏈
                 visualization_chain = LLMChain(
                     llm=self.visualization_llm,
                     prompt=self.visualization_prompt,
-                    memory=self.memory,  # 添加記憶
                     output_key="visualization_result",
                     verbose=True
                 )
                 
-                # 生成可視化，使用記憶中的新聞數據
-                visualization_html = visualization_chain.run(
-                    tool=tool,
-                    template=template
-                )
+                # 直接傳入所有需要的參數
+                visualization_html = visualization_chain.run({
+                    "tool": tool,
+                    "template": template,
+                    "news_data": news_data  # 添加 news_data
+                })
                 
                 # 生成文件名
                 safe_tool_name = tool.replace("/", "_").replace(" ", "_")
                 file_name = f"{safe_tool_name}_{timestamp}.html"
                 file_path = os.path.join(output_dir, file_name)
                 
-                # 保存 HTML 文件
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(visualization_html)
                 
-                logger.info(f"已保存可視化文件：{file_path}")
-                
-                # 添加到可視化列表
                 visualizations.append(Visualization(
                     tool=tool,
                     html=visualization_html
                 ))
                 
                 logger.info(f"已為 {tool} 生成可視化圖表")
-                
-                # 避免 API 請求過於頻繁
                 time.sleep(1)
                 
             except Exception as e:
-                logger.error(f"為工具 {tool} 生成可視化時出錯: {str(e)}")
+                error_msg = f"為工具 {tool} 生成可視化時出錯: {str(e)}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
         
         return visualizations
     
     def create_final_report(self, 
-                          analysis_result: AnalysisResult,
-                          visualizations: List[Visualization]) -> str:
+                           analysis_result: AnalysisResult,
+                           visualizations: List[Visualization],
+                           news_data: str) -> str:  # 添加 news_data 參數
         """
         第三步：整合所有可視化並生成最終的分析報告
         
@@ -321,27 +298,20 @@ class NewsAnalysisAgent:
         
         # 執行報告生成鏈
         try:
-            final_report = self.report_chain.run(
-                analysis_summary=json.dumps(analysis_result.dict(), ensure_ascii=False, indent=2),
-                visualizations=visualizations_str,
-                report_template=report_template
-            )
+            final_report = self.report_chain.run({
+                "analysis_summary": json.dumps(analysis_result.dict(), ensure_ascii=False, indent=2),
+                "visualizations": visualizations_str,
+                "report_template": report_template,
+                "news_data": news_data  # 添加 news_data
+            })
             
             logger.info("最終報告生成完成")
             return final_report
             
         except Exception as e:
-            logger.error(f"生成最終報告時出錯: {str(e)}")
-            # 返回一個簡單的錯誤報告
-            return f"""<!DOCTYPE html>
-<html>
-<head><title>報告生成錯誤</title></head>
-<body>
-    <h1>報告生成過程中出現錯誤</h1>
-    <p>錯誤信息: {str(e)}</p>
-    <p>時間: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-</body>
-</html>"""
+            error_msg = f"生成最終報告時出錯: {str(e)}"
+            logger.error(error_msg)
+            raise Exception(error_msg)
     
     def save_report(self, report: str, output_path: str = "report.html") -> None:
         """
@@ -357,24 +327,24 @@ class NewsAnalysisAgent:
         logger.info(f"報告已保存到 {output_path}")
     
     def run_full_analysis(self, news_data: List[Dict[str, Any]], output_path: str = "report.html") -> str:
-        """
-        執行完整的分析流程
+        """執行完整的分析流程"""
+        news_data_str = json.dumps(news_data, ensure_ascii=False, indent=2)
         
-        Args:
-            news_data: 爬蟲獲取的新聞資料
-            output_path: 輸出報告的文件路徑
-            
-        Returns:
-            生成的 HTML 報告
-        """
         logger.info("1. 開始分析新聞資料...")
         analysis_result = self.analyze_news_data(news_data)
         
         logger.info(f"2. 生成可視化圖表 (需要工具: {', '.join(analysis_result.required_tools)})...")
-        visualizations = self.generate_visualizations(analysis_result.required_tools)
+        visualizations = self.generate_visualizations(
+            analysis_result.required_tools,
+            news_data_str  # 傳入 news_data
+        )
         
         logger.info("3. 創建最終報告...")
-        final_report = self.create_final_report(analysis_result, visualizations)
+        final_report = self.create_final_report(
+            analysis_result,
+            visualizations,
+            news_data_str  # 傳入 news_data
+        )
         
         self.save_report(final_report, output_path)
         
@@ -449,7 +419,7 @@ class VisualizationTool(BaseTool):
             news_data = input_data.get("news_data", [])
             tools = input_data.get("tools", [])
             
-            visualizations = self.agent.generate_visualizations(tools)
+            visualizations = self.agent.generate_visualizations(tools, json.dumps(news_data, ensure_ascii=False, indent=2))
             return json.dumps([v.dict() for v in visualizations], ensure_ascii=False, indent=2)
         except Exception as e:
             return f"生成可視化時出錯: {str(e)}"
@@ -481,7 +451,11 @@ class ReportGenerationTool(BaseTool):
             analysis_result = AnalysisResult(**analysis_result_dict)
             visualizations = [Visualization(**v) for v in visualizations_dict]
             
-            final_report = self.agent.create_final_report(analysis_result, visualizations)
+            final_report = self.agent.create_final_report(
+                analysis_result,
+                visualizations,
+                json.dumps(news_data, ensure_ascii=False, indent=2)  # 傳入 news_data
+            )
             
             # 保存報告（如果指定了輸出路徑）
             output_path = input_data.get("output_path")
