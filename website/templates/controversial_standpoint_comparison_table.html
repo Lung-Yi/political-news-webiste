@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爭議立場比較分析表</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #faf7f2;
+            color: #3e2723;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+        }
+        h2 {
+            color: #5d4037;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .analysis-description {
+            margin-bottom: 25px;
+            color: #6d4c41;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #d7ccc8;
+        }
+        th {
+            background-color: #efebe9;
+            color: #5d4037;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #fafafa;
+        }
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        .side-a {
+            background-color: rgba(161, 136, 127, 0.1);
+        }
+        .side-b {
+            background-color: rgba(188, 170, 164, 0.1);
+        }
+        .position-header {
+            text-align: center;
+            font-weight: bold;
+            background-color: #d7ccc8;
+        }
+        .issue-row {
+            background-color: #efebe9;
+            font-weight: bold;
+        }
+        .notes {
+            font-size: 0.9em;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #efebe9;
+            border-left: 4px solid #a1887f;
+            border-radius: 0 4px 4px 0;
+        }
+        .source {
+            font-size: 0.8em;
+            color: #8d6e63;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .comparison-summary {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>爭議立場比較分析表</h2>
+        
+        <div class="analysis-description">
+            <!-- 爭議概述 -->
+            本表格比較了關於「[爭議議題名稱]」的不同立場觀點，呈現[立場A]與[立場B]在關鍵議題上的論點差異、理據基礎及潛在影響，幫助讀者客觀理解爭議的多元面向。
+        </div>
+        
+        <table>
+            <tr>
+                <th style="width: 20%">爭議面向</th>
+                <th style="width: 40%" class="position-header">[立場A名稱]</th>
+                <th style="width: 40%" class="position-header">[立場B名稱]</th>
+            </tr>
+            <tr class="issue-row">
+                <td colspan="3">[主要議題1]</td>
+            </tr>
+            <tr>
+                <td>核心論點</td>
+                <td class="side-a">[立場A對此議題的核心主張]</td>
+                <td class="side-b">[立場B對此議題的核心主張]</td>
+            </tr>
+            <tr>
+                <td>支持理據</td>
+                <td class="side-a">[支持立場A的主要論據、數據或事實]</td>
+                <td class="side-b">[支持立場B的主要論據、數據或事實]</td>
+            </tr>
+            <tr>
+                <td>代表人物/組織</td>
+                <td class="side-a">[支持立場A的代表性人物或組織]</td>
+                <td class="side-b">[支持立場B的代表性人物或組織]</td>
+            </tr>
+            <tr>
+                <td>潛在影響</td>
+                <td class="side-a">[若採用立場A可能產生的影響或結果]</td>
+                <td class="side-b">[若採用立場B可能產生的影響或結果]</td>
+            </tr>
+            
+            <tr class="issue-row">
+                <td colspan="3">[主要議題2]</td>
+            </tr>
+            <tr>
+                <td>核心論點</td>
+                <td class="side-a">[立場A對此議題的核心主張]</td>
+                <td class="side-b">[立場B對此議題的核心主張]</td>
+            </tr>
+            <tr>
+                <td>支持理據</td>
+                <td class="side-a">[支持立場A的主要論據、數據或事實]</td>
+                <td class="side-b">[支持立場B的主要論據、數據或事實]</td>
+            </tr>
+            <tr>
+                <td>代表人物/組織</td>
+                <td class="side-a">[支持立場A的代表性人物或組織]</td>
+                <td class="side-b">[支持立場B的代表性人物或組織]</td>
+            </tr>
+            <tr>
+                <td>潛在影響</td>
+                <td class="side-a">[若採用立場A可能產生的影響或結果]</td>
+                <td class="side-b">[若採用立場B可能產生的影響或結果]</td>
+            </tr>
+            
+            <tr class="issue-row">
+                <td colspan="3">[主要議題3]</td>
+            </tr>
+            <tr>
+                <td>核心論點</td>
+                <td class="side-a">[立場A對此議題的核心主張]</td>
+                <td class="side-b">[立場B對此議題的核心主張]</td>
+            </tr>
+            <tr>
+                <td>支持理據</td>
+                <td class="side-a">[支持立場A的主要論據、數據或事實]</td>
+                <td class="side-b">[支持立場B的主要論據、數據或事實]</td>
+            </tr>
+            <tr>
+                <td>代表人物/組織</td>
+                <td class="side-a">[支持立場A的代表性人物或組織]</td>
+                <td class="side-b">[支持立場B的代表性人物或組織]</td>
+            </tr>
+            <tr>
+                <td>潛在影響</td>
+                <td class="side-a">[若採用立場A可能產生的影響或結果]</td>
+                <td class="side-b">[若採用立場B可能產生的影響或結果]</td>
+            </tr>
+            
+            <tr class="issue-row">
+                <td colspan="3">歷史脈絡</td>
+            </tr>
+            <tr>
+                <td>起源/背景</td>
+                <td class="side-a">[立場A的歷史起源或形成背景]</td>
+                <td class="side-b">[立場B的歷史起源或形成背景]</td>
+            </tr>
+            <tr>
+                <td>演變過程</td>
+                <td class="side-a">[立場A的發展演變]</td>
+                <td class="side-b">[立場B的發展演變]</td>
+            </tr>
+        </table>
+        
+        <div class="comparison-summary">
+            <h3 style="color: #5d4037; margin-top: 0;">綜合比較</h3>
+            <p>[在此提供雙方立場的綜合比較分析，指出關鍵差異、共識點及各自優勢與不足。]</p>
+        </div>
+        
+        <div class="notes">
+            <strong>分析說明：</strong>
+            <!-- 分析說明 -->
+            [在此補充對兩種立場的分析與評估，可包含更深入的觀點分析、可能的妥協方案、以及未來發展趨勢的預測等。此部分應保持客觀中立，避免偏袒任一方立場。]
+        </div>
+        
+        <div class="source">
+            資料來源：[資料收集時間範圍] 相關報導及專家評論綜合整理
+        </div>
+    </div>
+</body>
+</html>

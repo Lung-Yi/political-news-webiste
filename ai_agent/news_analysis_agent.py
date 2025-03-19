@@ -204,20 +204,20 @@ class NewsAnalysisAgent:
                 rationale={}
             )
     
-    def generate_visualizations(self, 
-                              news_data: List[Dict[str, Any]], 
-                              required_tools: List[str]) -> List[Visualization]:
+    def generate_visualizations(self, news_data: List[Dict[str, Any]], required_tools: List[str]) -> List[Visualization]:
         """
         第二步：根據分析結果為每種所需工具生成可視化圖表
-        
-        Args:
-            news_data: 爬蟲獲取的新聞資料列表
-            required_tools: 需要使用的分析工具列表
-            
-        Returns:
-            生成的可視化圖表列表
         """
         visualizations = []
+        
+        # 創建可視化輸出目錄
+        output_dir = "visualizations_html_files"
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            logger.info(f"創建可視化輸出目錄：{output_dir}")
+        
+        # 生成時間戳，用於文件名
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
         for tool in required_tools:
             try:
@@ -243,6 +243,18 @@ class NewsAnalysisAgent:
                     template=template
                 )
                 
+                # 生成文件名
+                safe_tool_name = tool.replace("/", "_").replace(" ", "_")
+                file_name = f"{safe_tool_name}_{timestamp}.html"
+                file_path = os.path.join(output_dir, file_name)
+                
+                # 保存 HTML 文件
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(visualization_html)
+                
+                logger.info(f"已保存可視化文件：{file_path}")
+                
+                # 添加到可視化列表
                 visualizations.append(Visualization(
                     tool=tool,
                     html=visualization_html
@@ -362,13 +374,12 @@ class NewsAnalysisAgent:
             "台灣地理區域數值分布圖": read_html_template(os.path.join(self.templates_dir, "taiwan_geographical_value_distribution.html")),
             "重大時間線軸圖": read_html_template(os.path.join(self.templates_dir, "major_time_axis.html")),
             "財務報表分析": read_html_template(os.path.join(self.templates_dir, "financial_report_analysis.html")),
-            "新聞媒體立場分析比較表",
-            "爭議立場比較分析表"
+            "新聞媒體立場分析比較表": read_html_template(os.path.join(self.templates_dir, "news_media_standpoint_comparison_table.html")),
+            "爭議立場比較分析表": read_html_template(os.path.join(self.templates_dir, "controversial_standpoint_comparison_table.html"))
         }
         
         # 為其他工具添加默認模板
-        
-        return templates.get(tool, """""")
+        return templates.get(tool, "")
     
     def _get_default_report_template(self) -> str:
         """
