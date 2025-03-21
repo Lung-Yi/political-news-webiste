@@ -1,0 +1,150 @@
+.sankey-container {
+    width: 100%;
+    max-width: 700px;
+    height: 400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.sankey-tooltip {
+    position: absolute;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 12px;
+    opacity: 0;
+}
+
+.sankey-link {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: 0.2;
+    transition: stroke-opacity 0.3s;
+}
+
+.sankey-link:hover {
+    stroke-opacity: 0.5;
+}
+
+.sankey-node {
+    stroke: #000;
+    transition: fill 0.3s;
+}
+
+.sankey-node:hover {
+    fill: #4a8c73;
+}
+
+.sankey-label {
+    font-size: 12px;
+    font-family: sans-serif;
+}
+/* 圖表容器樣式 */
+.chart-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 圖表響應式設計 */
+@media screen and (max-width: 768px) {
+    .chart-container {
+        width: 95%;
+        padding: 10px;
+    }
+}
+
+/* Canvas 元素樣式 */
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* 爭議立場比較分析表樣式 */
+
+
+/* 分析描述樣式 */
+.analysis-description {
+    margin-bottom: 25px;
+    color: #6d4c41;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* 表格容器 */
+.position-comparison-table {
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+/* 表格基本樣式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #d7ccc8;
+}
+
+th {
+    background-color: #efebe9;
+    color: #5d4037;
+    font-weight: bold;
+}
+
+/* 表格列樣式 */
+tr:hover {
+    background-color: #fafafa;
+}
+
+tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+/* 立場列樣式 */
+.aspect-column {
+    width: 20%;
+}
+
+.position-header {
+    width: 40%;
+    text-align: center;
+    font-weight: bold;
+    background-color: #d7ccc8;
+}
+
+.position-a-column {
+    background-color: rgba(161, 136, 127, 0.1);
+}
+
+.position-b-column {
+    background-color: rgba(188, 170, 164, 0.1);
+}
+
+/* 議題行樣式 */
+.issue-row {
+    background-color: #efebe9;
+    font-weight: bold;
+}
+
+.issue-row td {
+    padding: 10px 15px;
+}
+
+/* 比較摘要樣式 */
+.comparison-summary {
+    margin: 30px 0;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+

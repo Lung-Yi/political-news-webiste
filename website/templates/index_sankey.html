@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Sankey 桑基圖示例</title>
+  <!-- 引入 CSS -->
+  <link rel="stylesheet" href="../assets/css/charts.css">
+  <!-- 引入 D3.js 與 d3-sankey 函式庫 -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <!-- 引入自定義的 sankey.js -->
+  <script src="sankey.js"></script>
+</head>
+<body>
+  <h2>桑基圖示例</h2>
+  <!-- 用來放置桑基圖的容器 -->
+  <div class="sankey-container"></div>
+  <script>
+    // 頁面載入後呼叫 drawSankey() 繪製圖形
+    drawSankey(".sankey-container");
+  </script>
+</body>
+</html>

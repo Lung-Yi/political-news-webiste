@@ -18,7 +18,7 @@ from typing import List, Optional
 from prompt_library.prompts import analysis_system_template, analysis_human_template, \
     visualization_system_template, visualization_human_template, \
     report_system_template, report_human_template
-from prompt_library.utils import read_html_template
+from prompt_library.utils import read_html_template, read_js_file
 # 創建logs目錄（如果不存在）
 log_dir = "logs"
 if not os.path.exists(log_dir):
@@ -112,7 +112,8 @@ class NewsAnalysisAgent:
             "比例圓餅圖",
             "財務報表分析",
             "新聞媒體立場分析比較表",
-            "爭議立場比較分析表"
+            "爭議立場比較分析表",
+            "桑基圖(Sankey Diagram)"
         ]
         
         # 檢查模板目錄是否存在
@@ -363,7 +364,8 @@ class NewsAnalysisAgent:
             "重大時間線軸圖": read_html_template(os.path.join(self.templates_dir, "major_time_axis.html")),
             "財務報表分析": read_html_template(os.path.join(self.templates_dir, "financial_report_analysis.html")),
             "新聞媒體立場分析比較表": read_html_template(os.path.join(self.templates_dir, "news_media_standpoint_comparison_table.html")),
-            "爭議立場比較分析表": read_html_template(os.path.join(self.templates_dir, "controversial_standpoint_comparison_table.html"))
+            "爭議立場比較分析表": read_html_template(os.path.join(self.templates_dir, "controversial_standpoint_comparison_table.html")),
+            "桑基圖(Sankey Diagram)": read_js_file(os.path.join(self.templates_dir, "sankey.js"))
         }
         
         # 為其他工具添加默認模板
