@@ -13,7 +13,8 @@
 .top-bar {
     background-color: var(--primary-dark);
     color: white;
-    padding: var(--spacing-sm) 0;
+    /* padding: var(--spacing-sm) 0; */
+    padding: 1px 0; /* 減少上下內邊距 */
     font-size: 0.875rem;
 }
 
@@ -128,7 +129,7 @@
 /* 主頁頭 */
 .main-header {
     background-color: white;
-    padding: var(--spacing-md) 0;
+    padding: 0px 0; /* 減少上下內邊距 */
 }
 
 .main-header .container {

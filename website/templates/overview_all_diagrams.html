@@ -18,12 +18,14 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      
-    <!-- 3. 引入內部JS -->
-    <script src="time_trend.js"></script>
-    <script src="sankey.js"></script>
-    <script src="bar_chart.js"></script>
-    <script src="controversial_standpoint_comparison.js"></script>
+    <!-- Taiwan geography-->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-geo@4.2.2/build/index.umd.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+    <script src="https://d3js.org/d3-geo.v2.min.js"></script>
+    <script src="https://d3js.org/d3-format.v2.min.js"></script>
+    <script src="https://d3js.org/d3-fetch.v2.min.js"></script>
+    <script src="https://d3js.org/topojson-client.v3.min.js"></script>
+        
     <!-- 網站圖標 -->
     <link rel="icon" href="../assets/images/favicon.ico">
 </head>
@@ -94,18 +96,23 @@
                     <div class="chart-container">
                         <canvas id="trendChart"></canvas>
                     </div>
+                    <script src="time_trend.js"></script>
+
                     <h1>桑基圖示例</h1>
                     <!-- 用來放置桑基圖的容器 -->
-                    <div class="sankey-container"></div>
-                    <script>
-                        // 頁面載入後呼叫 drawSankey() 繪製圖形
-                        drawSankey(".sankey-container");
-                    </script>
-
+                    <div class="sankey-container">
+                        <script src="sankey.js"></script>
+                        <script>
+                            // 頁面載入後呼叫 drawSankey() 繪製圖形
+                            drawSankey(".sankey-container");
+                        </script>
+                    </div>
+                    
                     <h1>長條圖示例</h1>
                     <div class="chart-container">
                         <canvas id="chart"></canvas>
                     </div>
+                    <script src="bar_chart.js"></script>
                     
                     <h1>爭議表格範例</h1>                   
                     <!-- 分析描述區域 -->
@@ -128,6 +135,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <script src="controversial_standpoint_comparison.js"></script>
                     
                     <!-- 綜合比較區域 -->
                     <div id="comparison-summary" class="comparison-summary">
@@ -135,9 +143,78 @@
                         <p></p>
                     </div>                   
                 </div>
+                
+                <h1>媒體立場表格範例</h1> 
+                <div class="container" id="mediaContainer">
+                    <h2>媒體立場分析</h2>
+                    <div class="analysis-description">
+                      本表格分析了不同媒體對於[議題名稱]的報導角度、引述來源及關注焦點，
+                      展示各家媒體在議題框架和立場的差異。透過比較分析，可以看出媒體偏向與報導重點的多元性。
+                    </div>
+                    <table class="media-table" id="mediaTable">
+                      <thead>
+                        <tr>
+                          <th>媒體</th>
+                          <th>報導角度</th>
+                          <th>引述來源</th>
+                          <th>關注焦點</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- 表格資料將由 JavaScript 動態產生 -->
+                      </tbody>
+                    </table>
+                </div>
+                <script src="media.js"></script>
+                
+                <h1>時間線軸圖範例</h1> 
+                <div class="container">
+                    <h2>【您的時間線標題】</h2>
+                    <div class="timeline" id="timeline">
+                      <!-- 事件會透過JavaScript動態添加 -->
+                    </div>
+                </div>
+                <script src="timeline.js"></script>
+
+                <h1>圓餅圖範例</h1>
+                <div class="pie-chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <script src="piechart.js"></script>
+
+                <h1>台灣地理數值圖範例</h1>
+                <div class="taiwan-map-container">
+                    <h2 class="taiwan-map-title">[分析主題]</h2>
+                    <h3 class="taiwan-map-subtitle">[分析時間或範圍]</h3>
                     
+                    <div class="taiwan-map-description">
+                        <!-- 這裡將由 AI 填入數據描述 -->
+                        本視覺化呈現了台灣各縣市[分析指標]的地理分布情況。通過地圖方式展示，能夠直觀了解各地區[指標名稱]的差異，幫助識別地理分布特徵和區域性趨勢。
+                    </div>
                     
+                    <div class="taiwan-map-chart-container">
+                        <div class="taiwan-map-loading" id="loading">載入地圖中...</div>
+                        <canvas id="taiwanMap"></canvas>
+                    </div>
                     
+                    <div class="taiwan-map-legend" id="customLegend"></div>
+                    
+                    <div class="taiwan-map-notes">
+                        <strong>分析說明：</strong>
+                        <!-- 這裡將由 AI 填入分析說明 -->
+                        地圖顏色深淺表示[指標名稱]的高低，顏色越深表示數值越高。[在此補充關於數據、分析方法或結果解讀的詳細說明]。
+                    </div>
+                    
+                    <div class="taiwan-map-data-source">
+                        數據來源：[資料來源] | 最後更新：<span id="update-date"></span>
+                    </div>
+                </div>
+                <script src="taiwan-map.js"></script>
+
+                <h1>數值分類排序分析</h1>
+                <div id="sortedChartApp"></div>
+                <script src="sorted-chart.js"></script>
+
                 </header>
 
                 <div class="lead">

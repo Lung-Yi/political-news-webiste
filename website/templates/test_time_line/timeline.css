@@ -1,0 +1,167 @@
+/* timeline.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+  }
+  
+  body {
+    background-color: #f8f5f1; /* 淺棕色背景 */
+    color: #5d4037; /* 深棕色文字 */
+    padding: 20px;
+  }
+  
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #3e2723; /* 暗棕色標題 */
+    font-weight: bold;
+  }
+  
+  .timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: #8d6e63; /* 中棕色時間線 */
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+    border-radius: 5px;
+  }
+  
+  .event {
+    padding: 10px 40px;
+    position: relative;
+    width: 50%;
+    margin-bottom: 1px; /* 極度緊湊的間距 */
+  }
+  
+  .event::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #efebe9; /* 淺棕色圓點背景 */
+    border: 4px solid #a1887f; /* 中棕色圓點邊框 */
+    border-radius: 50%;
+    top: 15px;
+    z-index: 1;
+  }
+  
+  .left {
+    left: 0;
+  }
+  
+  .right {
+    left: 50%;
+  }
+  
+  .left::after {
+    right: -11px;
+  }
+  
+  .right::after {
+    left: -11px;
+  }
+  
+  .content {
+    padding: 15px;
+    background-color: #e0d4ca; /* 加深的卡片背景色 */
+    position: relative;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(121, 85, 72, 0.3); /* 加深的棕色陰影 */
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 4px solid #a1887f; /* 左側棕色邊框 */
+  }
+  
+  /* 為右側事件定義新的邊框類別 */
+  .right .content {
+    border-left: none;
+    border-right: 4px solid #a1887f; /* 右側棕色邊框 */
+  }
+  
+  .content:hover {
+    box-shadow: 0 5px 15px rgba(121, 85, 72, 0.3);
+    transform: translateY(-5px);
+  }
+  
+  .date {
+    color: #6d4c41; /* 中深棕色日期 */
+    font-weight: bold;
+    margin-bottom: 3px;
+    font-size: 14px;
+  }
+  
+  .title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 6px;
+    color: #4e342e; /* 深棕色標題 */
+  }
+  
+  .description {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .details {
+    display: none;
+    margin-top: 10px;
+    line-height: 1.6;
+    font-size: 14px;
+    color: #5d4037; /* 深棕色詳細文字 */
+    border-top: 1px dashed #bcaaa4; /* 淺棕色虛線分隔 */
+    padding-top: 8px;
+  }
+  
+  .expand-btn {
+    display: block;
+    margin-top: 10px;
+    color: #8d6e63; /* 中棕色按鈕文字 */
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  
+  .expand-btn:hover {
+    color: #6d4c41; /* 深棕色懸停狀態 */
+  }
+  
+  @media screen and (max-width: 768px) {
+    .timeline::after {
+      left: 31px;
+    }
+    
+    .event {
+      width: 100%;
+      padding-left: 70px;
+      padding-right: 25px;
+      left: 0;
+    }
+    
+    .right .content {
+      border-right: none;
+      border-left: 4px solid #a1887f; /* 所有卡片左側棕色邊框 */
+    }
+    
+    .event::after {
+      left: 21px;
+    }
+  }
+  

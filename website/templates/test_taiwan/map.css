@@ -1,0 +1,103 @@
+/* map.css */
+
+/* 基本頁面與容器樣式 */
+body {
+    font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #faf7f2;
+    color: #3e2723;
+  }
+  
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+  }
+  
+  /* 地理圖視覺化相關樣式 */
+  .visualization-title {
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+  }
+  
+  .visualization-subtitle {
+    color: #8d6e63;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1em;
+    font-weight: normal;
+  }
+  
+  .visualization-description {
+    margin-bottom: 25px;
+    color: #6d4c41;
+    line-height: 1.6;
+    text-align: justify;
+  }
+  
+  /* 新增一個專屬於地理圖的類別 */
+  .geo-map-container {
+    height: 600px;
+    margin: 20px 0;
+    position: relative;
+  }
+  
+  .data-source {
+    font-size: 0.8em;
+    color: #8d6e63;
+    text-align: right;
+    margin-top: 20px;
+  }
+  
+  .notes {
+    font-size: 0.9em;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #efebe9;
+    border-left: 4px solid #a1887f;
+    border-radius: 0 4px 4px 0;
+  }
+  
+  /* 自訂圖例樣式 */
+  .legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px 10px 0;
+  }
+  
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 4px;
+  }
+  
+  .legend-label {
+    font-size: 0.9em;
+    color: #5d4037;
+  }
+  
+  /* 載入提示樣式 */
+  .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8d6e63;
+    font-size: 1.2em;
+  }
+  

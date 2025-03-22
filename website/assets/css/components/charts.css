@@ -148,3 +148,283 @@ tr:nth-child(even) {
     border-radius: 5px;
 }
 
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: #8d6e63; /* 中棕色時間線 */
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+    border-radius: 5px;
+}
+
+.event {
+    padding: 10px 40px;
+    position: relative;
+    width: 50%;
+    margin-bottom: 1px; /* 極度緊湊的間距 */
+}
+
+.event::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #efebe9; /* 淺棕色圓點背景 */
+    border: 4px solid #a1887f; /* 中棕色圓點邊框 */
+    border-radius: 50%;
+    top: 15px;
+    z-index: 1;
+}
+
+.left {
+    left: 0;
+}
+
+.right {
+    left: 50%;
+}
+
+.left::after {
+    right: -11px;
+}
+
+.right::after {
+    left: -11px;
+}
+
+.content {
+    padding: 15px;
+    background-color: #e0d4ca; /* 加深的卡片背景色 */
+    position: relative;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(121, 85, 72, 0.3); /* 加深的棕色陰影 */
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 4px solid #a1887f; /* 左側棕色邊框 */
+}
+
+/* 為右側事件定義新的邊框類別 */
+.right .content {
+    border-left: none;
+    border-right: 4px solid #a1887f; /* 右側棕色邊框 */
+}
+
+.content:hover {
+    box-shadow: 0 5px 15px rgba(121, 85, 72, 0.3);
+    transform: translateY(-5px);
+}
+  
+.date {
+    color: #6d4c41; /* 中深棕色日期 */
+    font-weight: bold;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+.notes {
+    font-size: 0.9em;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #efebe9;
+    border-left: 4px solid #a1887f;
+    border-radius: 0 4px 4px 0;
+}
+
+.source {
+    font-size: 0.8em;
+    color: #8d6e63;
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* 專業的棕色主題媒體立場比較表 */
+.media-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95em;
+}
+
+.media-table th,
+.media-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #d7ccc8; /* 淡棕色邊框 */
+}
+
+.media-table th {
+    background-color: #8d6e63; /* 中棕色背景 */
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.media-table tbody tr:nth-child(odd) {
+    background-color: #efebe9; /* 淺棕色背景 */
+}
+
+.media-table tbody tr:nth-child(even) {
+    background-color: #f5f5f5; /* 較淺的棕色背景 */
+}
+
+.media-table tbody tr:hover {
+    background-color: #d7ccc8; /* 深棕色hover效果 */
+    transition: background-color 0.3s ease;
+}
+
+/* 專屬於圓餅圖的容器 */
+.pie-chart-container {
+    width: 50%;
+    margin: 0 auto;
+    /* 可根據需要增加額外樣式，例如背景或邊框 */
+}
+/* 主容器 */
+.taiwan-map-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+}
+
+/* 標題樣式 */
+.taiwan-map-title {
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+}
+
+.taiwan-map-subtitle {
+    color: #8d6e63;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+/* 描述文字 */
+.taiwan-map-description {
+    margin-bottom: 25px;
+    color: #6d4c41;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* 地圖容器 */
+.taiwan-map-chart-container {
+    height: 600px;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* 數據來源標註 */
+.taiwan-map-data-source {
+    font-size: 0.8em;
+    color: #8d6e63;
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* 註釋區塊 */
+.taiwan-map-notes {
+    font-size: 0.9em;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #efebe9;
+    border-left: 4px solid #a1887f;
+    border-radius: 0 4px 4px 0;
+}
+
+/* 圖例樣式 */
+.taiwan-map-legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.taiwan-map-legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px 10px 0;
+}
+
+.taiwan-map-legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+.taiwan-map-legend-label {
+    font-size: 0.9em;
+    color: #5d4037;
+}
+
+/* 載入提示 */
+.taiwan-map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8d6e63;
+    font-size: 1.2em;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .taiwan-map-container {
+        padding: 15px;
+    }
+}
+
+/* 數值排序模板 */
+.sorted-chart-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+}
+
+.sorted-chart-title {
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+}
+
+.sorted-chart-subtitle {
+    color: #8d6e63;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.sorted-chart-description {
+    margin-bottom: 25px;
+    color: #6d4c41;
+    line-height: 1.6;
+    text-align: justify;
+}
+

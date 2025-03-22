@@ -1,0 +1,134 @@
+/* 台灣地理環境區域分布圖樣式 */
+
+body {
+    font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #faf7f2;
+    color: #3e2723;
+}
+
+/* 主容器 */
+.taiwan-map-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(62, 39, 35, 0.1);
+}
+
+/* 標題樣式 */
+.taiwan-map-title {
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+}
+
+.taiwan-map-subtitle {
+    color: #8d6e63;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+/* 描述文字 */
+.taiwan-map-description {
+    margin-bottom: 25px;
+    color: #6d4c41;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* 地圖容器 */
+.taiwan-map-chart-container {
+    height: 600px;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* 數據來源標註 */
+.taiwan-map-data-source {
+    font-size: 0.8em;
+    color: #8d6e63;
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* 註釋區塊 */
+.taiwan-map-notes {
+    font-size: 0.9em;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #efebe9;
+    border-left: 4px solid #a1887f;
+    border-radius: 0 4px 4px 0;
+}
+
+/* 圖例樣式 */
+.taiwan-map-legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.taiwan-map-legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px 10px 0;
+}
+
+.taiwan-map-legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+.taiwan-map-legend-label {
+    font-size: 0.9em;
+    color: #5d4037;
+}
+
+/* 載入提示 */
+.taiwan-map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8d6e63;
+    font-size: 1.2em;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .taiwan-map-container {
+        padding: 15px;
+    }
+    
+    .taiwan-map-chart-container {
+        height: 400px;
+    }
+    
+    .taiwan-map-title {
+        font-size: 1.3em;
+    }
+    
+    .taiwan-map-subtitle {
+        font-size: 0.9em;
+    }
+}
+
+/* 錯誤信息樣式 */
+.taiwan-map-error {
+    color: #d32f2f;
+    text-align: center;
+    padding: 20px;
+    background-color: #ffebee;
+    border-radius: 4px;
+    margin: 20px 0;
+}
