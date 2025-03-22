@@ -18,7 +18,7 @@ def basic_analysis(data_path):
     )
     
     # 3. 運行分析
-    final_report = agent.run_full_analysis(news_data, "news_analysis_report.html")
+    final_report = agent.run_full_analysis(news_data, "outputs/news_analysis_report.html")
     print("分析報告已生成")
     
     # 如果需要查看分析的細節，可以使用下面的步驟

@@ -7,3 +7,4 @@ java_convert.py
 logs/
 !website/templates/*.html
 test/
+website/outputs/

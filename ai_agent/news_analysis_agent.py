@@ -51,7 +51,9 @@ class AnalysisResult(BaseModel):
 class Visualization(BaseModel):
     """可視化圖表的 Pydantic 模型"""
     tool: str = Field(description="使用的分析工具名稱")
-    html: str = Field(description="生成的 HTML 代碼")
+    js: str = Field(description="生成的 .js 代碼")
+    reason: str = Field(description="分析此圖表的原因")
+    file_name: str = Field(description="存檔的.js檔名")
     
 class NewsAnalysisAgent:
     def __init__(self, 
@@ -110,10 +112,10 @@ class NewsAnalysisAgent:
             "台灣地理區域數值分布圖",
             "重大時間線軸圖",
             "比例圓餅圖",
-            "財務報表分析",
+            # "財務報表分析",
             "新聞媒體立場分析比較表",
             "爭議立場比較分析表",
-            "桑基圖(Sankey Diagram)"
+            "桑基圖"
         ]
         
         # 檢查模板目錄是否存在
@@ -164,7 +166,7 @@ class NewsAnalysisAgent:
                 SystemMessagePromptTemplate.from_template(visualization_system_template),
                 HumanMessagePromptTemplate.from_template(visualization_human_template)
             ],
-            input_variables=["tool", "template", "news_data"],  # 添加 news_data
+            input_variables=["tool", "reason", "template", "news_data"],  # 添加 news_data
         )
         
         # 最終報告生成鏈
@@ -205,8 +207,10 @@ class NewsAnalysisAgent:
             
             # 修改這裡，使用正確的鍵名獲取結果
             parsed_result = self.analysis_fixing_parser.parse(result["analysis_result"])
-            logger.info(f"新聞分析完成，需要使用工具: {parsed_result.required_tools}")
-            
+            logger.info(f"新聞分析完成，主要主題: {parsed_result.main_topic}")
+            logger.info(f"需要使用工具: {parsed_result.required_tools}")
+            logger.info(f"選擇這些工具的理由: {parsed_result.rationale}")
+                        
             return parsed_result
             
         except Exception as e:
@@ -214,14 +218,15 @@ class NewsAnalysisAgent:
             logger.error(error_msg)
             raise Exception(error_msg)
     
-    def generate_visualizations(self, required_tools: List[str], news_data: str) -> List[Visualization]:
+    def generate_visualizations(self, required_tools: List[str], rationale: Dict[str, str], news_data: str) -> List[Visualization]:
         """
         第二步：根據分析結果為每種所需工具生成可視化圖表
         """
         visualizations = []
+        self.visualization_file_names = dict()
         
         # 創建可視化輸出目錄
-        output_dir = "visualizations_html_files"
+        output_dir = "outputs"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         
@@ -229,7 +234,7 @@ class NewsAnalysisAgent:
         
         for tool in required_tools:
             try:
-                # 讀取對應的 HTML 模板
+                # 讀取對應的 js 模板
                 template = self._get_default_template(tool)
                 if not template:
                     logger.warning(f"模板文件 {tool} 不存在，將使用空白模板")
@@ -241,25 +246,28 @@ class NewsAnalysisAgent:
                     output_key="visualization_result",
                     verbose=True
                 )
-                
                 # 直接傳入所有需要的參數
-                visualization_html = visualization_chain.run({
+                visualization_js = visualization_chain.run({
                     "tool": tool,
+                    "reason": rationale[tool],
                     "template": template,
                     "news_data": news_data  # 添加 news_data
                 })
                 
                 # 生成文件名
                 safe_tool_name = tool.replace("/", "_").replace(" ", "_")
-                file_name = f"{safe_tool_name}_{timestamp}.html"
+                file_name = f"{safe_tool_name}_{timestamp}.js"
+                self.visualization_file_names.update({tool: file_name})
                 file_path = os.path.join(output_dir, file_name)
                 
                 with open(file_path, "w", encoding="utf-8") as f:
-                    f.write(visualization_html)
+                    f.write(visualization_js)
                 
                 visualizations.append(Visualization(
                     tool=tool,
-                    html=visualization_html
+                    js=visualization_js,
+                    reason=rationale[tool],
+                    file_name=file_name
                 ))
                 
                 logger.info(f"已為 {tool} 生成可視化圖表")
@@ -293,8 +301,8 @@ class NewsAnalysisAgent:
         
         # 視覺化 HTML 代碼的準備
         visualizations_str = "\n\n".join([
-            f"--- {vis.tool} 視覺化代碼 ---\n{vis.html}" 
-            for vis in visualizations
+            f"({i+1}) {vis.tool}, 檔名:{vis.file_name}, 分析原因:{vis.reason}" 
+            for i, vis in enumerate(visualizations)
         ])
         
         # 執行報告生成鏈
@@ -314,7 +322,7 @@ class NewsAnalysisAgent:
             logger.error(error_msg)
             raise Exception(error_msg)
     
-    def save_report(self, report: str, output_path: str = "report.html") -> None:
+    def save_report(self, report: str, output_path: str = "outputs/report.html") -> None:
         """
         保存生成的報告到文件
         
@@ -337,6 +345,7 @@ class NewsAnalysisAgent:
         logger.info(f"2. 生成可視化圖表 (需要工具: {', '.join(analysis_result.required_tools)})...")
         visualizations = self.generate_visualizations(
             analysis_result.required_tools,
+            analysis_result.rationale,
             news_data_str  # 傳入 news_data
         )
         
@@ -357,15 +366,15 @@ class NewsAnalysisAgent:
         """
         # 這裡為各種工具提供默認模板
         templates = {
-            "時間變化趨勢圖": read_html_template(os.path.join(self.templates_dir, "time_trend.html")),
-            "比例圓餅圖": read_html_template(os.path.join(self.templates_dir, "pie_chart.html")),
-            "數值分類排序": read_html_template(os.path.join(self.templates_dir, "numerical_value_sorting.html")),
-            "台灣地理區域數值分布圖": read_html_template(os.path.join(self.templates_dir, "taiwan_geographical_value_distribution.html")),
-            "重大時間線軸圖": read_html_template(os.path.join(self.templates_dir, "major_time_axis.html")),
-            "財務報表分析": read_html_template(os.path.join(self.templates_dir, "financial_report_analysis.html")),
-            "新聞媒體立場分析比較表": read_html_template(os.path.join(self.templates_dir, "news_media_standpoint_comparison_table.html")),
-            "爭議立場比較分析表": read_html_template(os.path.join(self.templates_dir, "controversial_standpoint_comparison_table.html")),
-            "桑基圖(Sankey Diagram)": read_js_file(os.path.join(self.templates_dir, "sankey.js"))
+            "時間變化趨勢圖": read_js_file(os.path.join(self.templates_dir, "time_trend.js")),
+            "比例圓餅圖": read_js_file(os.path.join(self.templates_dir, "piechart.js")),
+            "數值分類排序": read_js_file(os.path.join(self.templates_dir, "sorted-chart.js")),
+            "台灣地理區域數值分布圖": read_js_file(os.path.join(self.templates_dir, "taiwan-map.js")),
+            "重大時間線軸圖": read_js_file(os.path.join(self.templates_dir, "timeline.js")),
+            # "財務報表分析": read_js_file(os.path.join(self.templates_dir, "financial_report_analysis.html")),
+            "新聞媒體立場分析比較表": read_js_file(os.path.join(self.templates_dir, "media.js")),
+            "爭議立場比較分析表": read_js_file(os.path.join(self.templates_dir, "controversial_standpoint_comparison.js")),
+            "桑基圖": read_js_file(os.path.join(self.templates_dir, "sankey.js"))
         }
         
         # 為其他工具添加默認模板
@@ -420,8 +429,9 @@ class VisualizationTool(BaseTool):
             input_data = json.loads(input_str)
             news_data = input_data.get("news_data", [])
             tools = input_data.get("tools", [])
+            rationale = input_data.get("rationale")
             
-            visualizations = self.agent.generate_visualizations(tools, json.dumps(news_data, ensure_ascii=False, indent=2))
+            visualizations = self.agent.generate_visualizations(tools, rationale, json.dumps(news_data, ensure_ascii=False, indent=2))
             return json.dumps([v.dict() for v in visualizations], ensure_ascii=False, indent=2)
         except Exception as e:
             return f"生成可視化時出錯: {str(e)}"
