@@ -6,6 +6,8 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 # Langchain 核心導入
+from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
@@ -66,6 +68,7 @@ class NewsAnalysisAgent:
     def __init__(self, 
                  api_key: Optional[str] = None, 
                  model_name: str = "claude-3-7-sonnet-20250219",
+                 model_provider: str = "anthropic",  # 添加新參數
                  temperature: float = 0.3,
                  templates_dir: Optional[str] = None):
         """
@@ -74,8 +77,9 @@ class NewsAnalysisAgent:
         Args:
             api_key: LLM API 金鑰，如果是 None 則從環境變量獲取
             model_name: 要使用的模型名稱
+            model_provider: 選擇模型提供者 ("anthropic" 或 "openai")
             temperature: 模型溫度
-            templates_dir: HTML 模板所在目錄，如果是 None 則使用預設路徑
+            templates_dir: HTML 模板所在目錄
         """
         # 獲取當前檔案的目錄
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -91,27 +95,48 @@ class NewsAnalysisAgent:
         
         self.temperature = temperature
         self.model_name = model_name
+        self.model_provider = model_provider.lower()
         
-        # 導入 Anthropic 相關模組
-        from langchain_anthropic import ChatAnthropic
-        
-        self.api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
-        if not self.api_key:
-            raise ValueError("API 金鑰未提供，請通過參數或環境變量 ANTHROPIC_API_KEY 設置")
+        # 根據提供者選擇 API key 和模型
+        if self.model_provider == "anthropic":
+            self.api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+            if not self.api_key:
+                raise ValueError("API 金鑰未提供，請通過參數或環境變量 ANTHROPIC_API_KEY 設置")
             
-        # 初始化 Claude LLM
-        self.visualization_llm = ChatAnthropic(
-            model=model_name,
-            temperature=temperature,
-            anthropic_api_key=self.api_key,
-            max_tokens=8000  # 設置適合的 output token 限制
-        )
-        self.report_llm = ChatAnthropic(
-            model=model_name,
-            temperature=temperature,
-            anthropic_api_key=self.api_key,
-            max_tokens=40000  # 設置適合的 output token 限制
-        )  
+            # 初始化 Claude LLM
+            self.visualization_llm = ChatAnthropic(
+                model=model_name,
+                temperature=temperature,
+                anthropic_api_key=self.api_key,
+                max_tokens=8000
+            )
+            self.report_llm = ChatAnthropic(
+                model=model_name,
+                temperature=temperature,
+                anthropic_api_key=self.api_key,
+                max_tokens=40000
+            )
+        elif self.model_provider == "openai":
+            self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+            if not self.api_key:
+                raise ValueError("API 金鑰未提供，請通過參數或環境變量 OPENAI_API_KEY 設置")
+            
+            # 初始化 OpenAI LLM
+            self.visualization_llm = ChatOpenAI(
+                model=model_name,
+                temperature=temperature,
+                api_key=self.api_key,
+                max_tokens=4000
+            )
+            self.report_llm = ChatOpenAI(
+                model=model_name,
+                temperature=temperature,
+                api_key=self.api_key,
+                max_tokens=4000
+            )
+        else:
+            raise ValueError("不支持的模型提供者。請選擇 'anthropic' 或 'openai'")
+        
         # 可用的分析工具列表
         self.analysis_tools = [
             "時間變化趨勢圖",
@@ -227,17 +252,20 @@ class NewsAnalysisAgent:
             logger.error(error_msg)
             raise Exception(error_msg)
     
-    def generate_visualizations(self, required_tools: List[str], rationale: Dict[str, str], news_data: str) -> List[Visualization]:
+    def generate_visualizations(self, required_tools: List[str], rationale: Dict[str, str], news_data: str, output_path: str = "outputs/report.html") -> List[Visualization]:
         """
         第二步：根據分析結果為每種所需工具生成可視化圖表
         """
         visualizations = []
         self.visualization_file_names = dict()
         
-        # 創建可視化輸出目錄
-        output_dir = "outputs"
-        if not os.path.exists(output_dir):
+        # 獲取輸出目錄路徑（與報告相同目錄）
+        output_dir = os.path.dirname(output_path)
+        
+        # 如果輸出目錄不存在，則創建它
+        if output_dir and not os.path.exists(output_dir):
             os.makedirs(output_dir)
+            logger.info(f"創建輸出目錄：{output_dir}")
                 
         for tool in required_tools:
             try:
@@ -279,18 +307,22 @@ class NewsAnalysisAgent:
                 
                 parsed_result = visualization_fixing_parser.parse(result)
                 
-                # 分別保存 JS 和 HTML 文件
+                # 分別保存 JS 和 HTML 文件到相同目錄
                 tool_name = TRANSLATION_DICT.get(tool, tool)
                 safe_tool_name = tool_name.replace("/", "_").replace(" ", "_")
                 js_file_name = f"{safe_tool_name}.js"
                 html_file_name = f"{safe_tool_name}.html"
                 
+                # 使用與報告相同的輸出目錄
+                js_path = os.path.join(output_dir, js_file_name)
+                html_path = os.path.join(output_dir, html_file_name)
+                
                 # 保存 JS 文件
-                with open(os.path.join(output_dir, js_file_name), "w", encoding="utf-8") as f:
+                with open(js_path, "w", encoding="utf-8") as f:
                     f.write(parsed_result.js_code)
                 
                 # 保存 HTML 文件
-                with open(os.path.join(output_dir, html_file_name), "w", encoding="utf-8") as f:
+                with open(html_path, "w", encoding="utf-8") as f:
                     f.write(parsed_result.html_code)
                 
                 visualizations.append(Visualization(
@@ -378,14 +410,15 @@ class NewsAnalysisAgent:
         visualizations = self.generate_visualizations(
             analysis_result.required_tools,
             analysis_result.rationale,
-            news_data_str  # 傳入 news_data
+            news_data_str,  # 傳入 news_data
+            output_path     # 傳入輸出路徑
         )
         
         logger.info("3. 創建最終報告...")
         final_report = self.create_final_report(
             analysis_result,
             visualizations,
-            news_data_str  # 傳入 news_data
+            news_data_str
         )
         
         self.save_report(final_report, output_path)
@@ -513,33 +546,42 @@ class ReportGenerationTool(BaseTool):
 # ----- 主函數 -----
 
 def create_news_analysis_agent(api_key: Optional[str] = None, 
-                             model_name: str = "claude-3-7-sonnet-20250219",  # 預設使用 Claude 模型
+                             model_name: str = "claude-3-7-sonnet-20250219",
+                             model_provider: str = "anthropic",  # 添加新參數
                              temperature: float = 0.2,
                              templates_dir: Optional[str] = None) -> Any:
     """
-    創建一個基於 Langchain 的新聞分析 Agent，使用 Anthropic Claude 模型
+    創建一個基於 Langchain 的新聞分析 Agent
     
     Args:
-        api_key: Anthropic API 金鑰
-        model_name: Claude 模型名稱 (如 'claude-3-opus-20240229', 'claude-3-sonnet-20240229')
+        api_key: API 金鑰
+        model_name: 模型名稱
+        model_provider: 選擇模型提供者 ("anthropic" 或 "openai")
         temperature: 模型溫度
         templates_dir: 模板目錄
         
     Returns:
         初始化好的 Langchain Agent
     """
-    # 導入 Anthropic 相關模組
-    from langchain_anthropic import ChatAnthropic
-    
     # 檢查 API 金鑰
-    anthropic_api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
-    if not anthropic_api_key:
-        raise ValueError("未提供 Anthropic API 金鑰。請通過參數傳遞或設置 ANTHROPIC_API_KEY 環境變數。")
+    if model_provider.lower() == "anthropic":
+        api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise ValueError("未提供 Anthropic API 金鑰。請通過參數傳遞或設置 ANTHROPIC_API_KEY 環境變數。")
+        llm_class = ChatAnthropic
+    elif model_provider.lower() == "openai":
+        api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("未提供 OpenAI API 金鑰。請通過參數傳遞或設置 OPENAI_API_KEY 環境變數。")
+        llm_class = ChatOpenAI
+    else:
+        raise ValueError("不支持的模型提供者。請選擇 'anthropic' 或 'openai'")
     
     # 初始化基本的新聞分析 Agent
     news_agent = NewsAnalysisAgent(
-        api_key=anthropic_api_key,
+        api_key=api_key,
         model_name=model_name,
+        model_provider=model_provider,
         temperature=temperature,
         templates_dir=templates_dir
     )
@@ -551,12 +593,12 @@ def create_news_analysis_agent(api_key: Optional[str] = None,
         ReportGenerationTool(agent=news_agent)
     ]
     
-    # 初始化 Claude LLM
-    llm = ChatAnthropic(
+    # 初始化 LLM
+    llm = llm_class(
         temperature=temperature,
         model=model_name,
-        anthropic_api_key=anthropic_api_key,
-        max_tokens=4000  # 設置適合 Claude 的 token 限制
+        api_key=api_key,
+        max_tokens=4000
     )
     
     # 創建記憶
@@ -584,14 +626,18 @@ def create_news_analysis_agent(api_key: Optional[str] = None,
 def main():
     """主程序入口"""
     # 從環境變量或配置文件中加載 API 密鑰
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("ANTHROPIC_API_KEY")  # 或 OPENAI_API_KEY
     
     # 從文件加載新聞數據
     with open("news_data.json", "r", encoding="utf-8") as f:
         news_data = json.load(f)
     
     # 創建基本的分析 Agent
-    agent = NewsAnalysisAgent(api_key=api_key)
+    agent = NewsAnalysisAgent(
+        api_key=api_key,
+        model_provider="anthropic",  # 或 "openai"
+        model_name="claude-3-7-sonnet-20250219"  # 或 OpenAI 模型名稱
+    )
     
     # 運行完整分析
     output_path = "news_analysis_report.html"

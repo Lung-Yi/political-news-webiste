@@ -12,13 +12,13 @@ def basic_analysis(data_path):
     
     # 2. 初始化分析 Agent
     agent = NewsAnalysisAgent(
-        api_key=os.environ.get("ANTHROPIC_API_KEY"),
-        model_name="claude-3-7-sonnet-20250219",
+        model_provider="openai",
+        model_name="gpt-4o-2024-11-20",
         templates_dir="../website/templates"
     )
     
     # 3. 運行分析
-    final_report = agent.run_full_analysis(news_data, "../websites/outputs_2/news_analysis_report.html")
+    final_report = agent.run_full_analysis(news_data, "../website/outputs_3/news_analysis_report.html")
     print("分析報告已生成")
     
     # 如果需要查看分析的細節，可以使用下面的步驟
