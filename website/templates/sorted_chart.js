@@ -5,8 +5,8 @@ const chartData = {
     // 圖表基本信息
     title: '數值分類排序分析',
     subtitle: '[分析主題]',
-    description: '本視覺化呈現了[數據主題]的分類與排序分析，展示各項類別數值的分布情況。通過橫向條形圖的方式，清晰展現各類別間的數值差異，幫助理解[主題]的結構和分布特徵。',
-    notes: '圖表依數值大小排序，直觀呈現各類別間的數值差異。顏色深淺表示數值高低，數值較高的類別使用較深的棕色。[在此補充關於數據來源、分析方法或結果解讀的詳細說明]',
+    description: '本視覺化呈現了[數據主題]的分類與排序分析，幫助理解[主題]的結構和分布特徵。',
+    notes: '[在此補充關於數據來源、分析方法或結果解讀的詳細說明]',
     dataSource: '[資料來源]',
     
     // 圖表數據
@@ -120,7 +120,7 @@ function createSortedChart() {
         options: {
             indexAxis: 'y',  // 水平條形圖
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             plugins: {
                 title: {
                     display: true,

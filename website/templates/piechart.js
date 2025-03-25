@@ -16,6 +16,7 @@ const pieData = {
 // 定義圓餅圖的選項設定
 const pieOptions = {
   responsive: true,
+  maintainAspectRatio: true,
   plugins: {
     title: {
       display: true,

@@ -22,6 +22,7 @@ function initializeTimeChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
             plugins: {
                 title: {
                     display: true,

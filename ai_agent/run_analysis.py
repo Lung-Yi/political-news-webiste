@@ -18,7 +18,7 @@ def basic_analysis(data_path):
     )
     
     # 3. 運行分析
-    final_report = agent.run_full_analysis(news_data, "outputs/news_analysis_report.html")
+    final_report = agent.run_full_analysis(news_data, "../websites/outputs_2/news_analysis_report.html")
     print("分析報告已生成")
     
     # 如果需要查看分析的細節，可以使用下面的步驟
@@ -100,7 +100,7 @@ def basic_analysis(data_path):
 
 if __name__ == "__main__":
     # 選擇要運行的分析方法
-    file_path = "../updated_news_data.json"
+    file_path = "../updated_news_data_2.json"
     basic_analysis(file_path)
     # interactive_analysis()
     

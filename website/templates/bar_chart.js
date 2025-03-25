@@ -26,6 +26,7 @@ function initializeBarChart() {
     // 圖表配置選項
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: true,
         plugins: {
             title: {
                 display: true,

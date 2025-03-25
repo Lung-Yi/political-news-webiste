@@ -19,6 +19,7 @@ from prompt_library.prompts import analysis_system_template, analysis_human_temp
     visualization_system_template, visualization_human_template, \
     report_system_template, report_human_template
 from prompt_library.utils import read_html_template, read_js_file
+from prompt_library.constants import TOOL_TO_HTML_FRAGMENT_MAPPING, TRANSLATION_DICT
 # 創建logs目錄（如果不存在）
 log_dir = "logs"
 if not os.path.exists(log_dir):
@@ -51,10 +52,16 @@ class AnalysisResult(BaseModel):
 class Visualization(BaseModel):
     """可視化圖表的 Pydantic 模型"""
     tool: str = Field(description="使用的分析工具名稱")
-    js: str = Field(description="生成的 .js 代碼")
+    js_code: str = Field(description="生成的 .js 代碼")
     reason: str = Field(description="分析此圖表的原因")
     file_name: str = Field(description="存檔的.js檔名")
+    html_code: str = Field(description="生成的 HTML 代碼")
     
+class VisualizationOutput(BaseModel):
+    """可視化輸出的 Pydantic 模型"""
+    js_code: str = Field(description="生成的 JavaScript 代碼")
+    html_code: str = Field(description="生成的 HTML 代碼")
+
 class NewsAnalysisAgent:
     def __init__(self, 
                  api_key: Optional[str] = None, 
@@ -97,13 +104,13 @@ class NewsAnalysisAgent:
             model=model_name,
             temperature=temperature,
             anthropic_api_key=self.api_key,
-            max_tokens=4000  # 設置適合 Claude 的 output token 限制
+            max_tokens=8000  # 設置適合的 output token 限制
         )
         self.report_llm = ChatAnthropic(
             model=model_name,
             temperature=temperature,
             anthropic_api_key=self.api_key,
-            max_tokens=40000  # 設置適合 Claude 的 output token 限制
+            max_tokens=40000  # 設置適合的 output token 限制
         )  
         # 可用的分析工具列表
         self.analysis_tools = [
@@ -112,7 +119,6 @@ class NewsAnalysisAgent:
             "台灣地理區域數值分布圖",
             "重大時間線軸圖",
             "比例圓餅圖",
-            # "財務報表分析",
             "新聞媒體立場分析比較表",
             "爭議立場比較分析表",
             "桑基圖"
@@ -160,14 +166,17 @@ class NewsAnalysisAgent:
             verbose=True
         )
         
-        # 可視化生成鏈 - 修改這裡，只使用必要的輸入變數     
-        self.visualization_prompt = ChatPromptTemplate(
-            messages=[
-                SystemMessagePromptTemplate.from_template(visualization_system_template),
-                HumanMessagePromptTemplate.from_template(visualization_human_template)
-            ],
-            input_variables=["tool", "reason", "template", "news_data"],  # 添加 news_data
-        )
+        # # 可視化生成鏈 - 修改這裡，只使用必要的輸入變數     
+        # self.visualization_prompt = ChatPromptTemplate(
+        #     messages=[
+        #         SystemMessagePromptTemplate.from_template(visualization_system_template),
+        #         HumanMessagePromptTemplate.from_template(
+        #             visualization_human_template + "\n{format_instructions}"
+        #         )
+        #     ],
+        #     input_variables=["tool", "reason", "template", "news_data"],
+        #     partial_variables={"format_instructions": visualization_parser.get_format_instructions()}
+        # )
         
         # 最終報告生成鏈
         self.report_prompt = ChatPromptTemplate(
@@ -229,45 +238,67 @@ class NewsAnalysisAgent:
         output_dir = "outputs"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
+                
         for tool in required_tools:
             try:
-                # 讀取對應的 js 模板
-                template = self._get_default_template(tool)
-                if not template:
-                    logger.warning(f"模板文件 {tool} 不存在，將使用空白模板")
-
-                # 創建視覺化生成鏈
+                
+                # 創建視覺化生成鏈和解析器
+                visualization_parser = PydanticOutputParser(pydantic_object=VisualizationOutput)
+                
+                # 創建更可靠的解析器（自動修復輸出）
+                visualization_fixing_parser = OutputFixingParser.from_llm(
+                    parser=visualization_parser,
+                    llm=self.visualization_llm
+                )
+                
+                # 更新 visualization_prompt 以包含格式說明
+                self.visualization_prompt = ChatPromptTemplate(
+                    messages=[
+                        SystemMessagePromptTemplate.from_template(visualization_system_template),
+                        HumanMessagePromptTemplate.from_template(visualization_human_template)
+                    ],
+                    input_variables=["tool", "reason", "html_template", "js_template", "news_data"],
+                    partial_variables={"format_instructions": visualization_parser.get_format_instructions()}
+                )
+                
                 visualization_chain = LLMChain(
                     llm=self.visualization_llm,
                     prompt=self.visualization_prompt,
                     output_key="visualization_result",
                     verbose=True
                 )
-                # 直接傳入所有需要的參數
-                visualization_js = visualization_chain.run({
+                
+                # 執行鏈並解析結果
+                result = visualization_chain.run({
                     "tool": tool,
                     "reason": rationale[tool],
-                    "template": template,
-                    "news_data": news_data  # 添加 news_data
+                    "html_template": self._get_html_template(tool),
+                    "js_template": self._get_js_template(tool),
+                    "news_data": news_data
                 })
                 
-                # 生成文件名
-                safe_tool_name = tool.replace("/", "_").replace(" ", "_")
-                file_name = f"{safe_tool_name}_{timestamp}.js"
-                self.visualization_file_names.update({tool: file_name})
-                file_path = os.path.join(output_dir, file_name)
+                parsed_result = visualization_fixing_parser.parse(result)
                 
-                with open(file_path, "w", encoding="utf-8") as f:
-                    f.write(visualization_js)
+                # 分別保存 JS 和 HTML 文件
+                tool_name = TRANSLATION_DICT.get(tool, tool)
+                safe_tool_name = tool_name.replace("/", "_").replace(" ", "_")
+                js_file_name = f"{safe_tool_name}.js"
+                html_file_name = f"{safe_tool_name}.html"
+                
+                # 保存 JS 文件
+                with open(os.path.join(output_dir, js_file_name), "w", encoding="utf-8") as f:
+                    f.write(parsed_result.js_code)
+                
+                # 保存 HTML 文件
+                with open(os.path.join(output_dir, html_file_name), "w", encoding="utf-8") as f:
+                    f.write(parsed_result.html_code)
                 
                 visualizations.append(Visualization(
                     tool=tool,
-                    js=visualization_js,
+                    js_code=parsed_result.js_code,
                     reason=rationale[tool],
-                    file_name=file_name
+                    file_name=js_file_name,
+                    html_code=parsed_result.html_code
                 ))
                 
                 logger.info(f"已為 {tool} 生成可視化圖表")
@@ -301,9 +332,10 @@ class NewsAnalysisAgent:
         
         # 視覺化 HTML 代碼的準備
         visualizations_str = "\n\n".join([
-            f"({i+1}) {vis.tool}, 檔名:{vis.file_name}, 分析原因:{vis.reason}" 
+            f"({i+1}) {vis.tool}, 檔名:{vis.file_name}, 分析原因:{vis.reason},\nHTML代碼:```{vis.html_code}```" 
             for i, vis in enumerate(visualizations)
         ])
+        logger.info(f"檢視visulization prompt:\n{visualizations_str}")
         
         # 執行報告生成鏈
         try:
@@ -360,25 +392,21 @@ class NewsAnalysisAgent:
         
         return final_report
     
-    def _get_default_template(self, tool: str) -> str:
+    def _get_js_template(self, tool: str) -> str:
         """
-        獲取默認的工具模板
+        獲取默認的js模板
         """
         # 這裡為各種工具提供默認模板
-        templates = {
-            "時間變化趨勢圖": read_js_file(os.path.join(self.templates_dir, "time_trend.js")),
-            "比例圓餅圖": read_js_file(os.path.join(self.templates_dir, "piechart.js")),
-            "數值分類排序": read_js_file(os.path.join(self.templates_dir, "sorted-chart.js")),
-            "台灣地理區域數值分布圖": read_js_file(os.path.join(self.templates_dir, "taiwan-map.js")),
-            "重大時間線軸圖": read_js_file(os.path.join(self.templates_dir, "timeline.js")),
-            # "財務報表分析": read_js_file(os.path.join(self.templates_dir, "financial_report_analysis.html")),
-            "新聞媒體立場分析比較表": read_js_file(os.path.join(self.templates_dir, "media.js")),
-            "爭議立場比較分析表": read_js_file(os.path.join(self.templates_dir, "controversial_standpoint_comparison.js")),
-            "桑基圖": read_js_file(os.path.join(self.templates_dir, "sankey.js"))
-        }
+        js_templates = {tool: read_js_file(os.path.join(self.templates_dir, f"{TRANSLATION_DICT[tool]}.js")) for tool in TRANSLATION_DICT}
         
         # 為其他工具添加默認模板
-        return templates.get(tool, "")
+        return js_templates.get(tool, "")
+    
+    def _get_html_template(self, tool: str) -> str:
+        """
+        獲取默認的html模板
+        """
+        return TOOL_TO_HTML_FRAGMENT_MAPPING.get(TRANSLATION_DICT[tool], "")
     
     def _get_default_report_template(self) -> str:
         """
