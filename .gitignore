@@ -3,6 +3,9 @@
 *.zip
 *.txt
 *.html
+*.log
+*.png
+debug/
 java_convert.py
 logs/
 !website/templates/*.html

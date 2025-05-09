@@ -334,7 +334,8 @@ class NewsAnalysisAgent:
                 ))
                 
                 logger.info(f"已為 {tool} 生成可視化圖表")
-                time.sleep(1)
+                logger.info("因為rate limit，暫停60秒。")
+                time.sleep(60)
                 
             except Exception as e:
                 error_msg = f"為工具 {tool} 生成可視化時出錯: {str(e)}"
@@ -405,6 +406,8 @@ class NewsAnalysisAgent:
         
         logger.info("1. 開始分析新聞資料...")
         analysis_result = self.analyze_news_data(news_data)
+        logger.info("因為rate limit，暫停60秒。")
+        time.sleep(60)
         
         logger.info(f"2. 生成可視化圖表 (需要工具: {', '.join(analysis_result.required_tools)})...")
         visualizations = self.generate_visualizations(
@@ -413,6 +416,7 @@ class NewsAnalysisAgent:
             news_data_str,  # 傳入 news_data
             output_path     # 傳入輸出路徑
         )
+        
         
         logger.info("3. 創建最終報告...")
         final_report = self.create_final_report(
